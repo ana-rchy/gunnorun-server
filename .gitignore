@@ -1,0 +1,7 @@
+# Godot 4+ specific ignores
+.godot/
+
+# rest
+export/
+export_presets.cfg
+addons/
