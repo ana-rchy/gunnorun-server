@@ -11,19 +11,28 @@ config_version=5
 [application]
 
 config/name="gunnorun server"
-run/main_scene="res://server/Server.tscn"
+run/main_scene="res://scenes/Server.tscn"
 config/features=PackedStringArray("4.0", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+PlayerManager="*res://scripts/server/PlayerManager.cs"
 
 [dotnet]
 
 project/assembly_name="gunnorun server"
 
-[editor]
+[editor_plugins]
 
-run/main_run_args="port=24842 players=20"
+enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg")
+
+[network]
+
+limits/tcp/connect_timeout_seconds=15
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.117647, 0.117647, 0.117647, 1)

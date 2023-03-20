@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=3 uid="uid://8dtuyd0f10jo"]
+
+[ext_resource type="Texture2D" uid="uid://dc1w7quy2b37h" path="res://sprites/tilesheets/cave.png" id="2_sclao"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lkv5u"]
+texture = ExtResource("2_sclao")
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:0/0 = 0
+2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:0/0/physics_layer_0/angular_velocity = 0.0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:1/0 = 0
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:1/0 = 0
+2:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:1/0/physics_layer_0/angular_velocity = 0.0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:2/0 = 0
+0:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:2/0/physics_layer_0/angular_velocity = 0.0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:3/0 = 0
+0:3/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:3/0/physics_layer_0/angular_velocity = 0.0
+0:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSet" id="TileSet_37d3r"]
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_lkv5u")
+
+[node name="World" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
+scale = Vector2(10, 10)
+tile_set = SubResource("TileSet_37d3r")
+format = 2
+layer_0/tile_data = PackedInt32Array(262143, 0, 0, 196608, 0, 0, 196609, 0, 0, 196610, 0, 0, 196611, 0, 0, 196612, 0, 0, 196613, 0, 0, 196614, 0, 0, 196615, 0, 0, 196616, 0, 0, 262141, 0, 0, 262142, 0, 0, 262140, 0, 0, 262139, 0, 0, 262138, 0, 0, 262137, 65536, 0, 327672, 65536, 0, 393207, 65536, 0, 393208, 0, 0, 327673, 0, 0, -393216, 0, 2, -393215, 0, 2, -393214, 0, 2, -393213, 0, 2, -393212, 0, 2, -393211, 0, 2, -393210, 0, 2, -393209, 0, 2, -393208, 0, 2, -393207, 0, 2, -327681, 0, 2, -327682, 0, 2, -327683, 0, 2, -327684, 0, 2, -327685, 0, 2, -327686, 0, 2, -327687, 0, 2, -327688, 0, 2, -327689, 0, 2, -393206, 0, 2, 458735, 65536, 0, 458736, 0, 0, 458737, 0, 0, 458738, 0, 0, 458739, 0, 0, 458743, 0, 0, 458742, 0, 0, 458741, 0, 0, 458740, 0, 0, 131081, 65536, 0, 65546, 65536, 0, -65525, 65536, 0, 11, 0, 3, 65547, 0, 3, 196617, 0, 3, 131082, 0, 3, -65524, 0, 0, -65523, 0, 0, -65522, 0, 0, -327669, 65536, 1, -393205, 0, 2, -327668, 0, 2, -327667, 0, 2, -327666, 0, 2, -327665, 0, 2, -327664, 0, 2, -327663, 0, 2, -65521, 0, 0, -65520, 0, 0, -65519, 0, 0, -65518, 0, 0, -327662, 0, 0)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.25, 0.25)

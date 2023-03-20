@@ -10,7 +10,7 @@ public partial class Server : Node {
     private const int MAX_PEERS = 99;
     private const string WORLD_PATH = "/root/World/";
 
-    private string CurrentWorldName = "AlphaArena";
+    private string CurrentWorldName = "Cave";
     public List<long> PlayerIDs;
 
 	public override void _Ready() {
@@ -23,7 +23,7 @@ public partial class Server : Node {
 
 		// server setup
         CreateServer(port, peers);
-        SetCurrentWorld("AlphaArena");
+        SetCurrentWorld(CurrentWorldName);
 
         // signals
 		Multiplayer.PeerConnected += _OnPeerConnected;
@@ -44,8 +44,8 @@ public partial class Server : Node {
 
     private void SetCurrentWorld(string worldName) {
         CurrentWorldName = worldName;
-        var worldScene = Load<PackedScene>("res://game/scenes/worlds/" + CurrentWorldName + ".tscn").Instantiate();
-        GetNode("/root").AddChild(worldScene);
+        var worldScene = Load<PackedScene>("res://scenes/worlds/" + CurrentWorldName + ".tscn").Instantiate();
+        GetNode("/root").CallDeferred("add_child", worldScene);
     }
 
     private void GetServerArguments(out int port, out int peers) {
@@ -108,15 +108,15 @@ public partial class Server : Node {
 		PlayerIDs.Add(id);
 
         // new client setup + update other clients
-        var serializer = MessagePackSerializer.Get<List<long>>();
+        /* var serializer = MessagePackSerializer.Get<List<long>>();
         byte[] serializedIDs = serializer.PackSingleObject(PlayerIDs);
-        RpcId(id, "RPC_PlayerSetup", CurrentWorldName, id, serializedIDs);
+        RpcId(id, "RPC_PlayerSetup", CurrentWorldName, id, serializedIDs); */
 
         // add server-side player node
-        var newPlayerInstance = Load<PackedScene>("res://game/scenes/player/Player.tscn").Instantiate();
+        var newPlayerInstance = Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         newPlayerInstance.Name = id.ToString();
         newPlayerInstance.SetMultiplayerAuthority((int) id);
-        GetNode(WORLD_PATH).AddChild(newPlayerInstance);
+        GetNode(WORLD_PATH).CallDeferred("add_child", newPlayerInstance);
 
 
         Print("player ", id, " connected");
