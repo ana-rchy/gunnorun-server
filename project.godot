@@ -15,10 +15,6 @@ run/main_scene="res://scenes/Server.tscn"
 config/features=PackedStringArray("4.0", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-PlayerManager="*res://scripts/server/PlayerManager.cs"
-
 [dotnet]
 
 project/assembly_name="gunnorun server"

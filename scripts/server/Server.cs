@@ -1,17 +1,28 @@
 using Godot;
 using static Godot.GD;
+using static Godot.MultiplayerApi;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using MsgPack.Serialization;
 
 public partial class Server : Node {
-	private const int DEFAULT_PORT = 29999;
-    private const int MAX_PEERS = 99;
-    private const string WORLD_PATH = "/root/World/";
+    public struct PlayerDataStruct {
+        public PlayerDataStruct(string username, Color color) {
+            Username = username;
+            Color = color;
+        }
 
-    private string CurrentWorldName = "Cave";
-    public List<long> PlayerIDs;
+        public string Username;
+        public Color Color;
+    }
+
+	const int DEFAULT_PORT = 29999;
+    const int MAX_PEERS = 99;
+    const string WORLD_PATH = "/root/World/";
+
+    string CurrentWorldName = "Cave";
+    public Dictionary<long, PlayerDataStruct> PlayersData;
 
 	public override void _Ready() {
         int peers, port;
@@ -28,27 +39,24 @@ public partial class Server : Node {
         // signals
 		Multiplayer.PeerConnected += _OnPeerConnected;
         Multiplayer.PeerDisconnected += _OnPeerDisconnected;
-
-        // etc
-        PlayerIDs = new List<long>();
 	}
 
 	//---------------------------------------------------------------------------------//
     #region | funcs
     
-    private void CreateServer(int port, int peers) {
+    void CreateServer(int port, int peers) {
         var peer = new ENetMultiplayerPeer();
         peer.CreateServer(port, peers);
         Multiplayer.MultiplayerPeer = peer;
     }
 
-    private void SetCurrentWorld(string worldName) {
+    void SetCurrentWorld(string worldName) {
         CurrentWorldName = worldName;
         var worldScene = Load<PackedScene>("res://scenes/worlds/" + CurrentWorldName + ".tscn").Instantiate();
         GetNode("/root").CallDeferred("add_child", worldScene);
     }
 
-    private void GetServerArguments(out int port, out int peers) {
+    void GetServerArguments(out int port, out int peers) {
         // default values
         port = DEFAULT_PORT;
         peers = MAX_PEERS;
@@ -80,7 +88,7 @@ public partial class Server : Node {
         Print(peers);
     }
 
-    private void UpnpOpenPort(Object obj) {
+    void UpnpOpenPort(Object obj) {
 		int port = (int) obj;
 
         var upnp = new Upnp();
@@ -104,29 +112,26 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
     #region | signals
 
-	private void _OnPeerConnected(long id) {
-		PlayerIDs.Add(id);
-
-        // new client setup + update other clients
-        /* var serializer = MessagePackSerializer.Get<List<long>>();
-        byte[] serializedIDs = serializer.PackSingleObject(PlayerIDs);
-        RpcId(id, "RPC_PlayerSetup", CurrentWorldName, id, serializedIDs); */
+	void _OnPeerConnected(long id) {
+        // new client setup
+        var serializer = MessagePackSerializer.Get<Dictionary<long, PlayerDataStruct>>();
+        byte[] serializedData = serializer.PackSingleObject(PlayersData);
+        RpcId(id, nameof(Client_Setup), CurrentWorldName, serializedData);
 
         // add server-side player node
-        var newPlayerInstance = Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
-        newPlayerInstance.Name = id.ToString();
-        newPlayerInstance.SetMultiplayerAuthority((int) id);
-        GetNode(WORLD_PATH).CallDeferred("add_child", newPlayerInstance);
+        var newPlayer = Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
+        newPlayer.Name = id.ToString();
+        GetNode(WORLD_PATH).CallDeferred("add_child", newPlayer);
 
 
         Print("player ", id, " connected");
 	}   
 
     private void _OnPeerDisconnected(long id) {
-        PlayerIDs.Remove(id);
+        PlayersData.Remove(id);
 
         // update other clients
-        Rpc("RPC_PlayerDisconnected", id);
+        Rpc("Client_PlayerDisconnected", id);
 
         // remove server-side player node
         GetNode(WORLD_PATH + id.ToString()).QueueFree();
@@ -136,4 +141,19 @@ public partial class Server : Node {
     }
 
 	#endregion
+
+    //---------------------------------------------------------------------------------//
+    #region | rpc
+
+    [Rpc] void Client_Setup(string worldName) {}
+    [Rpc] void Client_NewPlayer(long id, string username, Color playerColor) {}
+    [Rpc] void Client_PlayerDisconnected(long id) {}
+
+    [Rpc(RpcMode.AnyPeer)] void RPC_PlayerData(string username, Color playerColor) {
+        PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new PlayerDataStruct(username, playerColor));
+
+        Rpc("Client_NewPlayer", Multiplayer.GetRemoteSenderId(), username, playerColor);
+    }
+
+    #endregion
 }

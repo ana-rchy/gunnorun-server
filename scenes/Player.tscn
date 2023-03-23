@@ -11,6 +11,7 @@ lock_rotation = true
 script = ExtResource("1_6cihp")
 
 [node name="ActionTimer" type="Timer" parent="."]
+one_shot = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_8xdm8")

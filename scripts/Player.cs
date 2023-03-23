@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using static Godot.GD;
 
 public partial class Player : RigidBody2D {
     [Export] float MAXIMUM_VELOCITY = 4000f;
@@ -18,11 +19,27 @@ public partial class Player : RigidBody2D {
     }
 
     //---------------------------------------------------------------------------------//
-    #region | rpc-related, physics loop
+    #region | rpc-related
 
-    public void SetVelocity(Vector2 velocityDirection) {
-        LinearVelocity = (LinearVelocity * GetMomentumMultiplier(LinearVelocity, velocityDirection)) + velocityDirection.Normalized() * CurrentWeapon.Knockback;
+    public void Shoot(Vector2 velocityDirection) {
+        var ammoNotEmpty = CurrentWeapon.Ammo > 0 || CurrentWeapon.Ammo == null;
+
+        if (ammoNotEmpty && ActionTimer.IsStopped()) {
+            Print("shoot");
+            SetVelocity(velocityDirection);
+            ActionTimer.Start(CurrentWeapon.Refire);
+        }
     }
+
+    public void Reload() {
+        ActionTimer.Start(CurrentWeapon.Reload);
+        CurrentWeapon.Ammo = CurrentWeapon.BaseAmmo;
+    }
+
+    #endregion
+
+    //---------------------------------------------------------------------------------//
+    #region | loops
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state) {
         state.LinearVelocity = ClampVelocity();
@@ -32,6 +49,10 @@ public partial class Player : RigidBody2D {
 
     //---------------------------------------------------------------------------------//
     #region | other funcs
+
+    void SetVelocity(Vector2 velocityDirection) {
+        LinearVelocity = (LinearVelocity * GetMomentumMultiplier(LinearVelocity, velocityDirection)) + velocityDirection.Normalized() * CurrentWeapon.Knockback;
+    }
 
     Vector2 ClampVelocity() {
         if (LinearVelocity.DistanceTo(new Vector2(0, 0)) > MAXIMUM_VELOCITY) {
