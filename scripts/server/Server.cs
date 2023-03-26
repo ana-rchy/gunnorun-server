@@ -27,6 +27,7 @@ public partial class Server : Node {
 	public override void _Ready() {
         int peers, port;
         GetServerArguments(out port, out peers);
+        PlayersData = new Dictionary<long, PlayerDataStruct>();
 		
 		// start UPNP
         Thread t = new Thread(UpnpOpenPort);
@@ -149,7 +150,7 @@ public partial class Server : Node {
     [Rpc] void Client_NewPlayer(long id, string username, Color playerColor) {}
     [Rpc] void Client_PlayerDisconnected(long id) {}
 
-    [Rpc(RpcMode.AnyPeer)] void RPC_PlayerData(string username, Color playerColor) {
+    [Rpc(RpcMode.AnyPeer)] void Server_PlayerData(string username, Color playerColor) {
         PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new PlayerDataStruct(username, playerColor));
 
         Rpc("Client_NewPlayer", Multiplayer.GetRemoteSenderId(), username, playerColor);
