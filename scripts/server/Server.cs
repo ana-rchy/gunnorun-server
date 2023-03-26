@@ -19,7 +19,6 @@ public partial class Server : Node {
 
 	const int DEFAULT_PORT = 29999;
     const int MAX_PEERS = 99;
-    const string WORLD_PATH = "/root/World/";
 
     string CurrentWorldName = "Cave";
     public Dictionary<long, PlayerDataStruct> PlayersData;
@@ -122,7 +121,7 @@ public partial class Server : Node {
         // add server-side player node
         var newPlayer = Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         newPlayer.Name = id.ToString();
-        GetNode(WORLD_PATH).CallDeferred("add_child", newPlayer);
+        GetNode(Global.WORLD_PATH).CallDeferred("add_child", newPlayer);
 
 
         Print("player ", id, " connected");
@@ -135,7 +134,7 @@ public partial class Server : Node {
         Rpc("Client_PlayerDisconnected", id);
 
         // remove server-side player node
-        GetNode(WORLD_PATH + id.ToString()).QueueFree();
+        GetNode(Global.WORLD_PATH + id.ToString()).QueueFree();
 
 
         Print("player ", id, " disconnected");
