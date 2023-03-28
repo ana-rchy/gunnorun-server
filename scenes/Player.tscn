@@ -1,14 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://dmdpxcyff1x67"]
+[gd_scene load_steps=4 format=3 uid="uid://bhasdjf24on7i"]
 
-[ext_resource type="Script" path="res://scripts/Player.cs" id="1_6cihp"]
+[ext_resource type="Script" path="res://scripts/PuppetPlayer.cs" id="1_5g1l4"]
 [ext_resource type="Texture2D" uid="uid://bn0b73pyhqxsw" path="res://sprites/character_small.png" id="2_pe4vc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8xdm8"]
 size = Vector2(110, 210)
 
-[node name="Player" type="RigidBody2D"]
-lock_rotation = true
-script = ExtResource("1_6cihp")
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_5g1l4")
 
 [node name="ActionTimer" type="Timer" parent="."]
 one_shot = true

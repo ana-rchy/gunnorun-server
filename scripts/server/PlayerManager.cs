@@ -35,11 +35,6 @@ public partial class PlayerManager : Node {
             var serializer = MessagePackSerializer.Get<Dictionary<long, Vector2>>();
             byte[] playerPositionsSerialized = serializer.PackSingleObject(playerPositions);
             Rpc(nameof(Client_UpdatePuppetPositions), playerPositionsSerialized);
-
-            // update client's player
-            foreach (var kvp in playerVelocities) {
-                RpcId(kvp.Key, nameof(Client_ReconciliatePlayer), playerPositions[kvp.Key], kvp.Value);
-            }
         }
     }
     
@@ -49,21 +44,10 @@ public partial class PlayerManager : Node {
     #region | rpc
 
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
-    [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_ReconciliatePlayer(Vector2 position, Vector2 velocity) {}
 
-    [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_Shoot(Vector2 velocityDirection) {
-        var player = GetNode<Player>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
-        player.Shoot(velocityDirection);
-    }
-
-    [Rpc(RpcMode.AnyPeer)] void Server_WeaponSwitch(int currentWeaponIndex) {
-        var player = GetNode<Player>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
-        player.CurrentWeapon = player.Weapons[currentWeaponIndex];
-    }
-
-    [Rpc(RpcMode.AnyPeer)] void Server_Reload() {
-        var player = GetNode<Player>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
-        player.Reload();
+    [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
+        var player = GetNode<PuppetPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
+        player.PuppetPosition = position;
     }
 
     #endregion
