@@ -51,7 +51,8 @@ public partial class Player : RigidBody2D {
     #region | other funcs
 
     void SetVelocity(Vector2 velocityDirection) {
-        LinearVelocity = (LinearVelocity * GetMomentumMultiplier(LinearVelocity, velocityDirection)) + velocityDirection.Normalized() * CurrentWeapon.Knockback;
+        //LinearVelocity = (LinearVelocity * GetMomentumMultiplier(LinearVelocity, velocityDirection)) + velocityDirection.Normalized() * CurrentWeapon.Knockback;
+        LinearVelocity = velocityDirection * CurrentWeapon.Knockback;
     }
 
     Vector2 ClampVelocity() {
@@ -66,9 +67,9 @@ public partial class Player : RigidBody2D {
         if (Mathf.RadToDeg(angleDelta) <= 45) // if less than 45 degrees change, keep all momentum
             return 1f;
         
-        angleDelta -= MathF.PI / 4;
+        angleDelta -= MathF.Round(MathF.PI / 4, 4);
 
-        return (MathF.Cos((4/3) * angleDelta) + 1) / 2; // scale the momentum over a range of 135*
+        return MathF.Round((MathF.Cos((4/3) * angleDelta) + 1) / 2, 4); // scale the momentum over a range of 135*
     }
 
     #endregion
