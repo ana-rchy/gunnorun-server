@@ -1,4 +1,5 @@
 using Godot;
+using static Godot.GD;
 using static Godot.MultiplayerApi;
 using static Godot.MultiplayerPeer;
 using System;
@@ -6,12 +7,6 @@ using System.Collections.Generic;
 using MsgPack.Serialization;
 
 public partial class PlayerManager : Node {
-    Server Server;
-
-    public override void _Ready() {
-        Server = GetNode<Server>("/root/Server");
-    }
-
     //---------------------------------------------------------------------------------//
     #region | tick rate loop
 
@@ -20,15 +15,13 @@ public partial class PlayerManager : Node {
         TickTimer += delta;
 
         if (TickTimer > Global.TICK_RATE) {
-            TickTimer = 0f;
+            TickTimer -= Global.TICK_RATE;
             Dictionary<long, Vector2> playerPositions = new Dictionary<long, Vector2>();
-            Dictionary<long, Vector2> playerVelocities = new Dictionary<long, Vector2>();
 
-            foreach (var kvp in Server.PlayersData) {
+            foreach (var kvp in Global.PlayersData) {
                 var id = kvp.Key;
-                var player = GetNode<RigidBody2D>(Global.WORLD_PATH + kvp.Key);
+                var player = GetNode<Node2D>(Global.WORLD_PATH + id);
                 playerPositions.TryAdd(id, player.GlobalPosition);
-                playerVelocities.TryAdd(id, player.LinearVelocity);
             }
             
             // update puppets
@@ -46,8 +39,19 @@ public partial class PlayerManager : Node {
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
-        var player = GetNode<PuppetPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
+        var player = GetNode<ServerPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
         player.PuppetPosition = position;
+    }
+
+    #endregion
+
+    //---------------------------------------------------------------------------------//
+    #region | funcs
+
+    public void CreateNewServerPlayer(long id) {
+        var newPlayer = Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
+        newPlayer.Name = id.ToString();
+        GetNode(Global.WORLD_PATH).CallDeferred("add_child", newPlayer);
     }
 
     #endregion

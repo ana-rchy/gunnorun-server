@@ -2,7 +2,7 @@ using Godot;
 using System;
 using static Godot.GD;
 
-public partial class PuppetPlayer : CharacterBody2D {
+public partial class ServerPlayer : CharacterBody2D {
     double Timer;
     public Vector2 PuppetPosition;
 

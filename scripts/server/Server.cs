@@ -7,26 +7,10 @@ using System.Threading;
 using MsgPack.Serialization;
 
 public partial class Server : Node {
-    public struct PlayerDataStruct {
-        public PlayerDataStruct(string username, Color color) {
-            Username = username;
-            Color = color;
-        }
-
-        public string Username;
-        public Color Color;
-    }
-
-	const int DEFAULT_PORT = 29999;
-    const int MAX_PEERS = 99;
-
-    string CurrentWorldName = "Cave";
-    public Dictionary<long, PlayerDataStruct> PlayersData;
-
 	public override void _Ready() {
         int peers, port;
         GetServerArguments(out port, out peers);
-        PlayersData = new Dictionary<long, PlayerDataStruct>();
+        Global.PlayersData = new Dictionary<long, Global.PlayerDataStruct>();
 		
 		// start UPNP
         Thread t = new Thread(UpnpOpenPort);
@@ -34,7 +18,7 @@ public partial class Server : Node {
 
 		// server setup
         CreateServer(port, peers);
-        SetCurrentWorld(CurrentWorldName);
+        SetCurrentWorld(Global.CurrentWorldName);
 
         // signals
 		Multiplayer.PeerConnected += _OnPeerConnected;
@@ -50,16 +34,10 @@ public partial class Server : Node {
         Multiplayer.MultiplayerPeer = peer;
     }
 
-    void SetCurrentWorld(string worldName) {
-        CurrentWorldName = worldName;
-        var worldScene = Load<PackedScene>("res://scenes/worlds/" + CurrentWorldName + ".tscn").Instantiate();
-        GetNode("/root").CallDeferred("add_child", worldScene);
-    }
-
     void GetServerArguments(out int port, out int peers) {
         // default values
-        port = DEFAULT_PORT;
-        peers = MAX_PEERS;
+        port = Global.DEFAULT_PORT;
+        peers = Global.MAX_PEERS;
 
         // cli args
         string[] args = new string[2];
@@ -107,12 +85,24 @@ public partial class Server : Node {
         }
     }
 
+    void SetCurrentWorld(string worldName) {
+        Global.CurrentWorldName = worldName;
+        var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorldName + ".tscn").Instantiate();
+        GetNode("/root").CallDeferred("add_child", worldScene);
+    }
+
     #endregion
 
 	//---------------------------------------------------------------------------------//
     #region | signals
 
 	void _OnPeerConnected(long id) {
+        var playerDataSerializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
+        byte[] serializedPlayerData = playerDataSerializer.PackSingleObject(Global.PlayersData);
+        RpcId(id, nameof(Client_Setup), serializedPlayerData, Global.GameState);
+
+
+        /*
         // new client setup
         var serializer = MessagePackSerializer.Get<Dictionary<long, PlayerDataStruct>>();
         byte[] serializedData = serializer.PackSingleObject(PlayersData);
@@ -122,19 +112,20 @@ public partial class Server : Node {
         var newPlayer = Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         newPlayer.Name = id.ToString();
         GetNode(Global.WORLD_PATH).CallDeferred("add_child", newPlayer);
+        */
 
 
         Print("player ", id, " connected");
 	}   
 
     private void _OnPeerDisconnected(long id) {
-        PlayersData.Remove(id);
+        Global.PlayersData.Remove(id);
 
         // update other clients
         Rpc("Client_PlayerDisconnected", id);
 
         // remove server-side player node
-        GetNode(Global.WORLD_PATH + id.ToString()).QueueFree();
+        //GetNode(Global.WORLD_PATH + id.ToString()).QueueFree();
 
 
         Print("player ", id, " disconnected");
@@ -150,7 +141,7 @@ public partial class Server : Node {
     [Rpc] void Client_PlayerDisconnected(long id) {}
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerData(string username, Color playerColor) {
-        PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new PlayerDataStruct(username, playerColor));
+        Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, playerColor));
 
         Rpc("Client_NewPlayer", Multiplayer.GetRemoteSenderId(), username, playerColor);
     }
