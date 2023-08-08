@@ -36,10 +36,9 @@ public partial class LobbyManager : Node {
     }
     
     void StartGame() {
-        var playerManager = GetNode<PlayerManager>(Global.SERVER_PATH + "PlayerManager");
-        foreach (var id in Global.PlayersData.Keys) {
-            playerManager.CreateNewServerPlayer(id);
-        }
+        Global.GameState = "Ingame";
+
+        GetNode<Server>("/root/Server").SetCurrentWorld("AlphaArena");
 
         Rpc(nameof(Client_StartGame));
     }

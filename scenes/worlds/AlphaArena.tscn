@@ -4513,3 +4513,7 @@ layer_0/tile_data = PackedInt32Array(-3800939, 1114112, 0, -3800938, 1179648, 0,
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.1, 0.1)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/player/Player.tscn")
+spawn_path = NodePath("..")

@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cp3evw2jba763"]
+[gd_scene load_steps=3 format=3 uid="uid://c4e8cwpjra8tc"]
 
 [ext_resource type="Script" path="res://scripts/server/Server.cs" id="1_t6d7r"]
 [ext_resource type="Script" path="res://scripts/server/LobbyManager.cs" id="3_bqfle"]
-[ext_resource type="Script" path="res://scripts/server/PlayerManager.cs" id="3_bxhh0"]
 
 [node name="Server" type="Node"]
 script = ExtResource("1_t6d7r")
@@ -13,4 +12,3 @@ script = ExtResource("1_t6d7r")
 script = ExtResource("3_bqfle")
 
 [node name="PlayerManager" type="Node" parent="."]
-script = ExtResource("3_bxhh0")

@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://3ot2nem5gbvq"]
 
-[ext_resource type="Script" path="res://scripts/ServerPlayer.cs" id="1_5g1l4"]
-[ext_resource type="Texture2D" uid="uid://bn0b73pyhqxsw" path="res://sprites/character_small.png" id="2_pe4vc"]
+[ext_resource type="Script" path="res://scripts/ServerPlayer.cs" id="1_jgm4m"]
+[ext_resource type="Texture2D" uid="uid://bn0b73pyhqxsw" path="res://sprites/character_small.png" id="2_df8qm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8xdm8"]
 size = Vector2(110, 210)
 
 [node name="Player" type="CharacterBody2D"]
-script = ExtResource("1_5g1l4")
+script = ExtResource("1_jgm4m")
 
 [node name="ActionTimer" type="Timer" parent="."]
 one_shot = true
@@ -19,4 +19,4 @@ shape = SubResource("RectangleShape2D_8xdm8")
 texture_filter = 1
 position = Vector2(25, -1.19209e-07)
 scale = Vector2(10, 10)
-texture = ExtResource("2_pe4vc")
+texture = ExtResource("2_df8qm")
