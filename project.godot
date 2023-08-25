@@ -21,7 +21,7 @@ project/assembly_name="gunnorun server"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg")
+enabled=PackedStringArray()
 
 [network]
 

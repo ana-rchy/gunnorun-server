@@ -37,7 +37,6 @@ public partial class PlayerManager : Node {
     #region | rpc
 
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
-    [Rpc] void Client_RemovePlayer(long id) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
         var player = GetNode<ServerPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
@@ -55,12 +54,6 @@ public partial class PlayerManager : Node {
         newPlayer.Name = id.ToString();
 
         GetNode(Global.WORLD_PATH).CallDeferred("add_child", newPlayer);
-    }
-
-    public void RemovePlayer(long id) {
-        GetNode(Global.WORLD_PATH + id).QueueFree();
-
-        Rpc(nameof(Client_RemovePlayer), id);
     }
 
     #endregion

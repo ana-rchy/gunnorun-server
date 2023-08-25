@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://c4e8cwpjra8tc"]
+[gd_scene load_steps=5 format=3 uid="uid://c4e8cwpjra8tc"]
 
 [ext_resource type="Script" path="res://scripts/server/Server.cs" id="1_t6d7r"]
+[ext_resource type="Script" path="res://scripts/server/MatchManager.cs" id="2_q7ehu"]
 [ext_resource type="Script" path="res://scripts/server/LobbyManager.cs" id="3_bqfle"]
 [ext_resource type="Script" path="res://scripts/server/PlayerManager.cs" id="3_lclok"]
 
@@ -8,6 +9,7 @@
 script = ExtResource("1_t6d7r")
 
 [node name="MatchManager" type="Node" parent="."]
+script = ExtResource("2_q7ehu")
 
 [node name="LobbyManager" type="Node" parent="."]
 script = ExtResource("3_bqfle")

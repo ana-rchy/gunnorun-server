@@ -7,6 +7,8 @@
 size = Vector2(110, 210)
 
 [node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 0
 script = ExtResource("1_jgm4m")
 
 [node name="ActionTimer" type="Timer" parent="."]

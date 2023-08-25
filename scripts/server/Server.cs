@@ -7,131 +7,134 @@ using System.Threading;
 using MsgPack.Serialization;
 
 public partial class Server : Node {
-    public override void _Ready() {
-        int peers, port;
-        GetServerArguments(out port, out peers);
-        Global.PlayersData = new Dictionary<long, Global.PlayerDataStruct>();
+	public override void _Ready() {
+		int peers, port;
+		GetServerArguments(out port, out peers);
+		Global.PlayersData = new Dictionary<long, Global.PlayerDataStruct>();
 		
 		// start UPNP
-        Thread t = new Thread(UpnpOpenPort);
-        t.Start(port);
+		Thread t = new Thread(UpnpOpenPort);
+		t.Start(port);
 
 		// server setup
-        CreateServer(port, peers);
-        
-        // signals
+		CreateServer(port, peers);
+		
+		// signals
 		Multiplayer.PeerConnected += _OnPeerConnected;
-        Multiplayer.PeerDisconnected += _OnPeerDisconnected;
+		Multiplayer.PeerDisconnected += _OnPeerDisconnected;
 	}
 
-    //---------------------------------------------------------------------------------//
-    #region | signals
+	//---------------------------------------------------------------------------------//
+	#region | signals
 
-    void _OnPeerConnected(long id) {
-        var playerDataSerializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
-        byte[] serializedPlayerData = playerDataSerializer.PackSingleObject(Global.PlayersData);
-        RpcId(id, nameof(Client_Setup), serializedPlayerData, Global.GameState);
+	void _OnPeerConnected(long id) {
+		var playerDataSerializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
+		byte[] serializedPlayerData = playerDataSerializer.PackSingleObject(Global.PlayersData);
+		RpcId(id, nameof(Client_Setup), serializedPlayerData, Global.GameState);
 
-        Print("player ", id, " connected");
-    }
+		Print("player ", id, " connected");
+	}
 
-    void _OnPeerDisconnected(long id) {
-        Global.PlayersData.Remove(id);
+	void _OnPeerDisconnected(long id) {
+		Global.PlayersData.Remove(id);
 
-        if (Global.GameState == "Ingame") {
-            GetNode<PlayerManager>("PlayerManager").RemovePlayer(id);
-        }
+		Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
 
-        if (Multiplayer.GetPeers().Length == 0) {
-            Global.GameState = "Lobby";
-            GetNode(Global.WORLD_PATH).QueueFree();
+		if (Global.GameState == "Ingame") {
+			GetNode(Global.WORLD_PATH + id).QueueFree();
+		}
 
-            Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
-        }
+		if (Multiplayer.GetPeers().Length == 0) {
+			Global.GameState = "Lobby";
+			GetNode(Global.WORLD_PATH).QueueFree();
 
-        Print("player ", id, " disconnected");
-    }
+			Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
+		}
 
-    #endregion
+		Print("player ", id, " disconnected");
+	}
 
-    //---------------------------------------------------------------------------------//
-    #region | rpc
+	#endregion
 
-    [Rpc] void Client_Setup(byte[] serializedPlayerData, string gameState) {}
-    [Rpc] void Client_NewPlayer(long id, string username, Color color, bool inLobby) {}
+	//---------------------------------------------------------------------------------//
+	#region | rpc
 
-    [Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
-        Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
+	[Rpc] void Client_Setup(byte[] serializedPlayerData, string gameState) {}
+	[Rpc] void Client_NewPlayer(long id, string username, Color color, bool inLobby) {}
+	[Rpc] void Client_PlayerLeft(long id, string gameState) {}
 
-        Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color, Global.GameState == "Lobby");
-    }
+	[Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
+		Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
 
-    #endregion
+		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color, Global.GameState == "Lobby");
+	}
 
-    //---------------------------------------------------------------------------------//
-    #region | funcs
+	#endregion
 
-    void GetServerArguments(out int port, out int peers) {
-        // default values
-        port = Global.DEFAULT_PORT;
-        peers = Global.MAX_PEERS;
+	//---------------------------------------------------------------------------------//
+	#region | funcs
 
-        // cli args
-        string[] args = new string[2];
-        foreach (var arg in OS.GetCmdlineArgs()) {
-            if (arg.Contains("=")) {
-                string[] subArgs = arg.Split('=');
-                bool error = false;
+	void GetServerArguments(out int port, out int peers) {
+		// default values
+		port = Global.DEFAULT_PORT;
+		peers = Global.MAX_PEERS;
 
-                switch(subArgs[0]) {
-                    case ("port"):
-                        error = !int.TryParse(subArgs[1], out port);
-                        break;
-                    case ("players"):
-                        error = !int.TryParse(subArgs[1], out peers);
-                        break;
-                }
+		// cli args
+		string[] args = new string[2];
+		foreach (var arg in OS.GetCmdlineArgs()) {
+			if (arg.Contains("=")) {
+				string[] subArgs = arg.Split('=');
+				bool error = false;
 
-                if (error) {
-                    PushError("enter an actual numerical value");
-                    GetTree().Quit();
-                }
-            }
-        }
+				switch(subArgs[0]) {
+					case ("port"):
+						error = !int.TryParse(subArgs[1], out port);
+						break;
+					case ("players"):
+						error = !int.TryParse(subArgs[1], out peers);
+						break;
+				}
 
-        Print(port + "\t" + peers);
-    }
+				if (error) {
+					PushError("enter an actual numerical value");
+					GetTree().Quit();
+				}
+			}
+		}
 
-    void UpnpOpenPort(Object portObj) {
+		Print(port + "\t" + peers);
+	}
+
+	void UpnpOpenPort(Object portObj) {
 		int port = (int) portObj;
 
-        var upnp = new Upnp();
-        if (upnp.Discover() == 0 && upnp.GetGateway().IsValidGateway()) {
-            var error = upnp.AddPortMapping(port, port, "", "UDP");
-            var error2 = upnp.AddPortMapping(port, port, "", "TCP");
-            if (error == 0 && error2 == 0) {
-                Print("UPNP success");
-            } else {
-                upnp.DeletePortMapping(port, "UDP");
-                upnp.DeletePortMapping(port, "TCP");
-                Print("UPNP failed: Failed to add a port mapping (Is the port already forwarded? Port already in use?)");
-            }
-        } else {
-            Print("UPNP failed: UPNP not enabled");
-        }
-    }
+		var upnp = new Upnp();
+		if (upnp.Discover() == 0 && upnp.GetGateway().IsValidGateway()) {
+			var error = upnp.AddPortMapping(port, port, "", "UDP");
+			var error2 = upnp.AddPortMapping(port, port, "", "TCP");
+			if (error == 0 && error2 == 0) {
+				Print("UPNP success");
+			} else {
+				upnp.DeletePortMapping(port, "UDP");
+				upnp.DeletePortMapping(port, "TCP");
+				Print("UPNP failed: Failed to add a port mapping (Is the port already forwarded? Port already in use?)");
+			}
+		} else {
+			Print("UPNP failed: UPNP not enabled");
+		}
+	}
 
-    void CreateServer(int port, int peers) {
-        var peer = new ENetMultiplayerPeer();
-        peer.CreateServer(port, peers);
-        Multiplayer.MultiplayerPeer = peer;
-    }
+	void CreateServer(int port, int peers) {
+		var peer = new ENetMultiplayerPeer();
+		peer.CreateServer(port, peers);
+		Multiplayer.MultiplayerPeer = peer;
+	}
 
-    public void SetCurrentWorld(string worldName) {
-        Global.CurrentWorldName = worldName;
-        var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorldName + ".tscn").Instantiate();
-        GetNode("/root").CallDeferred("add_child", worldScene);
-    }
+	public void LoadWorld(string worldName) {
+		Global.CurrentWorld = worldName;
+		var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorld + ".tscn").Instantiate();
+		GetNode("/root").CallDeferred("add_child", worldScene);
+	}
 
-    #endregion
+	#endregion
 }

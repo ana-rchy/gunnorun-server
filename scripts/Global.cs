@@ -25,5 +25,5 @@ public static class Global {
     public const string SERVER_PATH = "/root/Server/";
 
     public static string GameState = "Lobby";
-    public static string CurrentWorldName = "AlphaArena";    
+    public static string CurrentWorld = "TestRace";    
 }
