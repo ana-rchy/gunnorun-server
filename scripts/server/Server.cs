@@ -21,6 +21,7 @@ public partial class Server : Node {
         
         // signals
 		Multiplayer.PeerConnected += _OnPeerConnected;
+        Multiplayer.PeerDisconnected += _OnPeerDisconnected;
 	}
 
     //---------------------------------------------------------------------------------//
@@ -32,6 +33,23 @@ public partial class Server : Node {
         RpcId(id, nameof(Client_Setup), serializedPlayerData, Global.GameState);
 
         Print("player ", id, " connected");
+    }
+
+    void _OnPeerDisconnected(long id) {
+        Global.PlayersData.Remove(id);
+
+        if (Global.GameState == "Ingame") {
+            GetNode<PlayerManager>("PlayerManager").RemovePlayer(id);
+        }
+
+        if (Multiplayer.GetPeers().Length == 0) {
+            Global.GameState = "Lobby";
+            GetNode(Global.WORLD_PATH).QueueFree();
+
+            Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
+        }
+
+        Print("player ", id, " disconnected");
     }
 
     #endregion

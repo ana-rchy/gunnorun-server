@@ -37,9 +37,13 @@ public partial class LobbyManager : Node {
     
     void StartGame() {
         Global.GameState = "Ingame";
+        Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
 
         GetNode<Server>("/root/Server").SetCurrentWorld("AlphaArena");
 
+        foreach (var id in Global.PlayersData.Keys) {
+            GetNode<PlayerManager>("../PlayerManager").CallDeferred("CreateNewServerPlayer", id);
+        }
         Rpc(nameof(Client_StartGame));
     }
 
