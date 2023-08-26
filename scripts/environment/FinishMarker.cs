@@ -3,6 +3,11 @@ using System;
 
 public partial class FinishMarker : Node {
 	private void _OnPlayerEntered(Node2D player) {
-		GetNode<MatchManager>("/root/Server/MatchManager").Rpc("Client_PlayerWon", long.Parse(player.Name));
+		MatchManager matchManager = GetNode<MatchManager>(Global.SERVER_PATH + "MatchManager");
+		long id = long.Parse(player.Name);
+		LevelTimer levelTimer = GetNode<LevelTimer>(Global.WORLD_PATH + "LevelTimer");
+		levelTimer.StopTimer();
+
+		matchManager.Rpc("Client_PlayerWon", id, levelTimer.Time);
 	}
 }

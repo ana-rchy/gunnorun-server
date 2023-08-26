@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://uawrpagtjmww"]
+[gd_scene load_steps=7 format=3 uid="uid://uawrpagtjmww"]
 
 [ext_resource type="Texture2D" uid="uid://dc1w7quy2b37h" path="res://sprites/tilesheets/cave.png" id="1_m82s2"]
 [ext_resource type="Script" path="res://scripts/environment/FinishMarker.cs" id="2_h67ei"]
+[ext_resource type="Script" path="res://scripts/environment/LevelTimer.cs" id="3_xecl6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x8r87"]
 texture = ExtResource("1_m82s2")
@@ -57,5 +58,8 @@ script = ExtResource("2_h67ei")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Finish"]
 position = Vector2(0, 160)
 shape = SubResource("RectangleShape2D_l4o8m")
+
+[node name="LevelTimer" type="Node" parent="."]
+script = ExtResource("3_xecl6")
 
 [connection signal="body_entered" from="Markers/Finish" to="Markers/Finish" method="_OnPlayerEntered"]

@@ -37,10 +37,15 @@ public partial class PlayerManager : Node {
     #region | rpc
 
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
+    [Rpc] void Client_PlayerHit(int damage) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
         var player = GetNode<ServerPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
         player.PuppetPosition = position;
+    }
+
+    [Rpc(RpcMode.AnyPeer)] void Server_PlayerHit(long id, int damage) {
+        RpcId(id, nameof(Client_PlayerHit), damage);
     }
 
     #endregion
