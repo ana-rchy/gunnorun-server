@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://8dtuyd0f10jo"]
+[gd_scene load_steps=7 format=3 uid="uid://dsqcpvh8q6auw"]
 
-[ext_resource type="Texture2D" uid="uid://dc1w7quy2b37h" path="res://sprites/tilesheets/cave.png" id="2_sclao"]
+[ext_resource type="Texture2D" uid="uid://b76y88u6h7yif" path="res://sprites/tilesheets/cave.png" id="1_mrk11"]
+[ext_resource type="Script" path="res://scripts/environment/FinishMarker.cs" id="2_ahthf"]
+[ext_resource type="Script" path="res://scripts/environment/LevelTimer.cs" id="3_ayh7y"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lkv5u"]
-texture = ExtResource("2_sclao")
+texture = ExtResource("1_mrk11")
 1:0/0 = 0
 1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:0/0/physics_layer_0/angular_velocity = 0.0
@@ -36,10 +38,53 @@ texture = ExtResource("2_sclao")
 0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:2/0 = 0
+1:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:2/0/physics_layer_0/angular_velocity = 0.0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:2/0 = 0
+2:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:2/0/physics_layer_0/angular_velocity = 0.0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:3/0 = 0
+2:3/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:3/0/physics_layer_0/angular_velocity = 0.0
+2:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:3/0 = 0
+1:3/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:3/0/physics_layer_0/angular_velocity = 0.0
+1:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:4/0 = 0
+1:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:4/0/physics_layer_0/angular_velocity = 0.0
+1:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:4/0 = 0
+2:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:4/0/physics_layer_0/angular_velocity = 0.0
+2:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:4/0 = 0
+0:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:4/0/physics_layer_0/angular_velocity = 0.0
+0:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:5/0 = 0
+0:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:5/0/physics_layer_0/angular_velocity = 0.0
+0:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:5/0 = 0
+1:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:5/0/physics_layer_0/angular_velocity = 0.0
+1:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+3:0/0 = 0
+3:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:0/0/physics_layer_0/angular_velocity = 0.0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSet" id="TileSet_37d3r"]
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_lkv5u")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_poehd"]
+size = Vector2(160, 800)
 
 [node name="World" type="Node2D"]
 
@@ -48,7 +93,20 @@ texture_filter = 1
 scale = Vector2(10, 10)
 tile_set = SubResource("TileSet_37d3r")
 format = 2
-layer_0/tile_data = PackedInt32Array(262143, 0, 0, 196608, 0, 0, 196609, 0, 0, 196610, 0, 0, 196611, 0, 0, 196612, 0, 0, 196613, 0, 0, 196614, 0, 0, 196615, 0, 0, 196616, 0, 0, 262141, 0, 0, 262142, 0, 0, 262140, 0, 0, 262139, 0, 0, 262138, 0, 0, 262137, 65536, 0, 327672, 65536, 0, 393207, 65536, 0, 393208, 0, 0, 327673, 0, 0, -393216, 0, 2, -393215, 0, 2, -393214, 0, 2, -393213, 0, 2, -393212, 0, 2, -393211, 0, 2, -393210, 0, 2, -393209, 0, 2, -393208, 0, 2, -393207, 0, 2, -327681, 0, 2, -327682, 0, 2, -327683, 0, 2, -327684, 0, 2, -327685, 0, 2, -327686, 0, 2, -327687, 0, 2, -327688, 0, 2, -327689, 0, 2, -393206, 0, 2, 458735, 65536, 0, 458736, 0, 0, 458737, 0, 0, 458738, 0, 0, 458739, 0, 0, 458743, 0, 0, 458742, 0, 0, 458741, 0, 0, 458740, 0, 0, 131081, 65536, 0, 65546, 65536, 0, -65525, 65536, 0, 11, 0, 3, 65547, 0, 3, 196617, 0, 3, 131082, 0, 3, -65524, 0, 0, -65523, 0, 0, -65522, 0, 0, -327669, 65536, 1, -393205, 0, 2, -327668, 0, 2, -327667, 0, 2, -327666, 0, 2, -327665, 0, 2, -327664, 0, 2, -327663, 0, 2, -65521, 0, 0, -65520, 0, 0, -65519, 0, 0, -65518, 0, 0, -327662, 0, 0)
+layer_0/tile_data = PackedInt32Array(327678, 65536, 3, 327679, 0, 0, 262144, 0, 0, 262145, 0, 0, 262146, 0, 0, 262140, 65536, 0, -262141, 65536, 0, -262140, 65536, 5, -262139, 0, 5, -262138, 0, 5, 262147, 0, 0, 262148, 0, 0, 262149, 0, 0, 262150, 0, 0, 262151, 0, 0, 262152, 0, 0, 262153, 0, 0, 262154, 0, 0, 262155, 0, 0, 131085, 65536, 0, -262136, 196608, 0, -262137, 0, 5, -524275, 131072, 2, -458739, 0, 3, -524276, 0, 2, -524277, 0, 2, -196606, 65536, 0, -131071, 65536, 0, -65536, 65536, 0, 65535, 65536, 0, 131070, 65536, 0, 196605, 65536, 0, -196604, 131072, 1, -131069, 131072, 1, -196605, 65536, 4, -65534, 131072, 1, 1, 131072, 1, 65536, 131072, 1, 196607, 131072, 1, 262142, 0, 1, 196606, 65536, 4, 131071, 65536, 4, 0, 65536, 4, -65535, 65536, 4, -131070, 65536, 4, 262141, 131072, 3, 65551, 65536, 0, 65552, 131072, 3, 131087, 131072, 3, 131086, 0, 0, -393203, 65536, 1, -327666, 65536, 1, -196593, 65536, 1, 262156, 131072, 3, 196620, 65536, 0, 196621, 131072, 3, 16, 0, 3, -65520, 0, 3, -131056, 0, 3, -196592, 131072, 2, -327665, 131072, 2, -393202, 131072, 2, -262129, 0, 3, -524278, 65536, 1, -589814, 131072, 2, -655355, 0, 2, -589821, 0, 2, -589820, 131072, 1, -655354, 0, 2, -655353, 0, 2, -655352, 0, 2, -655351, 131072, 2, -65543, 65536, 2, -7, 131072, 1, -131078, 65536, 2, -65542, 131072, 1, -196613, 65536, 2, -131077, 131072, 1, -262148, 65536, 2, -196612, 131072, 1, -327683, 65536, 2, -262147, 131072, 1, -393218, 65536, 2, -327682, 131072, 1, -393217, 131072, 1, -589815, 65536, 1, -458753, 65536, 2, -524288, 0, 2, -524287, 131072, 1, -589823, 65536, 2, -655356, 65536, 2, -589822, 0, 2, 131064, 131072, 1, -8, 65536, 2, 65528, 0, 1, 131063, 65536, 2, 196599, 0, 1, 262135, 0, 1, 327671, 0, 1, 393207, 0, 1, 458743, 0, 1, 327676, 0, 3, 393212, 0, 3, 458748, 0, 3, 524284, 131072, 3, 655356, 0, 3, 720892, 0, 3, 786428, 0, 3, 851964, 0, 3, 917500, 0, 3, 983036, 0, 3, 1048572, 131072, 3, 524279, 0, 1, 589815, 0, 1, 655351, 131072, 1, 1048571, 0, 0, 1048570, 0, 0, 1048569, 0, 0, 1048568, 0, 0, 1048567, 0, 0, 1048566, 0, 0, 1048565, 0, 0, 1048564, 65536, 3, 983028, 131072, 0, 983027, 0, 0, 983026, 65536, 0, 1048562, 131072, 3, 655350, 0, 2, 655349, 0, 2, 655348, 0, 2, 655347, 0, 2, 655346, 0, 2, 655345, 0, 2, 655344, 0, 2, 1048561, 0, 0, 1048560, 0, 0, 1048559, 0, 0, 1048558, 0, 0, 1048557, 0, 0, 1048556, 0, 0, 1048555, 0, 0, 1048554, 0, 0, 1048553, 0, 0, 1048552, 0, 0, 1048551, 0, 0, 1048550, 0, 0, 1048549, 0, 0, 1048548, 0, 0, 1048547, 0, 0, 1048546, 0, 0, 1048545, 0, 0, 1048544, 0, 0, 1048543, 0, 0, 1048542, 0, 0, 1048541, 0, 0, 1048540, 0, 0, 655343, 0, 2, 655342, 0, 2, 655341, 0, 2, 655340, 0, 2, 655339, 0, 2, 655338, 0, 2, 655337, 0, 2, 655336, 0, 2, 655335, 0, 2, 655334, 0, 2, 655333, 0, 2, 655332, 0, 2, 655331, 65536, 2, 655328, 131072, 2, 655327, 0, 2, 655326, 0, 2, 655325, 0, 2, 655324, 0, 2, 720864, 65536, 1, 720867, 131072, 1, 720866, 0, 2, 720865, 0, 2, 1048539, 0, 0, 655323, 0, 2, 655322, 65536, 2, 1048538, 65536, 3, 720858, 0, 1, 786394, 0, 1, 851930, 0, 1, 917466, 0, 1, 983002, 0, 1, 524283, 65536, 0, 589819, 65536, 1, 589820, 131072, 2)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.25, 0.25)
+[node name="Markers" type="Node2D" parent="."]
+
+[node name="Finish" type="Area2D" parent="Markers"]
+position = Vector2(-5840, 2000)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_ahthf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Finish"]
+shape = SubResource("RectangleShape2D_poehd")
+
+[node name="LevelTimer" type="Node" parent="."]
+script = ExtResource("3_ayh7y")
+
+[connection signal="body_entered" from="Markers/Finish" to="Markers/Finish" method="_OnPlayerEntered"]

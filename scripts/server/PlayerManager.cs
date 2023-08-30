@@ -20,8 +20,8 @@ public partial class PlayerManager : Node {
 
             foreach (var kvp in Global.PlayersData) {
                 var id = kvp.Key;
-                var player = GetNode<Node2D>(Global.WORLD_PATH + id);
-                playerPositions.TryAdd(id, player.GlobalPosition);
+                var player = GetNodeOrNull<Node2D>(Global.WORLD_PATH + id);
+                if (player != null) playerPositions.TryAdd(id, player.GlobalPosition);
             }
             
             // update puppets
@@ -37,7 +37,8 @@ public partial class PlayerManager : Node {
     #region | rpc
 
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
-    [Rpc] void Client_PlayerHit(int damage) {}
+    [Rpc] void Client_PlayerHit(long id, int damage) {}
+    [Rpc] void Client_PlayerFrameChanged(long id, sbyte direction, byte frame) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
         var player = GetNode<ServerPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());
@@ -45,7 +46,11 @@ public partial class PlayerManager : Node {
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerHit(long id, int damage) {
-        RpcId(id, nameof(Client_PlayerHit), damage);
+        Rpc(nameof(Client_PlayerHit), id, damage);
+    }
+
+    [Rpc(RpcMode.AnyPeer)] public void Server_PlayerFrameChanged(sbyte direction, byte frame) {
+        Rpc(nameof(Client_PlayerFrameChanged), Multiplayer.GetRemoteSenderId(), direction, frame);
     }
 
     #endregion
