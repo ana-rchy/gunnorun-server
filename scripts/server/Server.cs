@@ -9,7 +9,7 @@ using MsgPack.Serialization;
 public partial class Server : Node {
 	public override void _Ready() {
 		int peers, port;
-		GetServerArguments(out port, out peers);
+		GetServerArguments(out Global.CurrentWorld, out port, out peers);
 		Global.PlayersData = new Dictionary<long, Global.PlayerDataStruct>();
 		
 		// start UPNP
@@ -74,19 +74,24 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
 	#region | funcs
 
-	void GetServerArguments(out int port, out int peers) {
+	void GetServerArguments(out string world, out int port, out int peers) {
 		// default values
+		world = Global.CurrentWorld;
 		port = Global.DEFAULT_PORT;
 		peers = Global.MAX_PEERS;
 
 		// cli args
-		string[] args = new string[2];
+		string[] args = new string[3];
 		foreach (var arg in OS.GetCmdlineArgs()) {
 			if (arg.Contains("=")) {
 				string[] subArgs = arg.Split('=');
 				bool error = false;
 
 				switch(subArgs[0]) {
+					case ("world"):
+						error = false;
+						world = subArgs[1];
+						break;
 					case ("port"):
 						error = !int.TryParse(subArgs[1], out port);
 						break;

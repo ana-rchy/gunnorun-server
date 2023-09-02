@@ -7,7 +7,7 @@ public partial class LobbyManager : Node {
     #region | rpc
 
     [Rpc] void Client_UpdateStatus(long id, bool ready) {}
-    [Rpc] void Client_StartGame() {}
+    [Rpc] void Client_StartGame(string worldName) {}
 
     [Rpc(RpcMode.AnyPeer)] void Server_UpdateStatus(bool ready) {
         var player = Global.PlayersData[Multiplayer.GetRemoteSenderId()];
@@ -44,7 +44,7 @@ public partial class LobbyManager : Node {
         foreach (var id in Global.PlayersData.Keys) {
             GetNode<PlayerManager>("../PlayerManager").CallDeferred("CreateNewServerPlayer", id);
         }
-        Rpc(nameof(Client_StartGame));
+        Rpc(nameof(Client_StartGame), Global.CurrentWorld);
     }
 
     #endregion

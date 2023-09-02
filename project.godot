@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 project/assembly_name="gunnorun server"
 
+[editor]
+
+run/main_run_args="world=AlphaArena"
+
 [editor_plugins]
 
 enabled=PackedStringArray()

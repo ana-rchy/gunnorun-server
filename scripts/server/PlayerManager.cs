@@ -38,6 +38,7 @@ public partial class PlayerManager : Node {
 
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
     [Rpc] void Client_PlayerHit(long id, int damage) {}
+    [Rpc] void Client_TracerShot(long id, float rotation, float range) {}
     [Rpc] void Client_PlayerFrameChanged(long id, sbyte direction, byte frame) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
@@ -47,6 +48,10 @@ public partial class PlayerManager : Node {
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerHit(long id, int damage) {
         Rpc(nameof(Client_PlayerHit), id, damage);
+    }
+    
+    [Rpc(RpcMode.AnyPeer)] void Server_TracerShot(float rotation, float range) {
+        Rpc(nameof(Client_TracerShot), Multiplayer.GetRemoteSenderId(), rotation, range);
     }
 
     [Rpc(RpcMode.AnyPeer)] public void Server_PlayerFrameChanged(sbyte direction, byte frame) {
