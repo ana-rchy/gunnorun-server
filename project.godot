@@ -13,7 +13,11 @@ config_version=5
 config/name="gunnorun server"
 run/main_scene="res://scenes/Server.tscn"
 config/features=PackedStringArray("4.1", "C#", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/image="res://sprites/icons/icon.png"
+boot_splash/fullsize=false
+boot_splash/use_filter=false
+config/icon="res://sprites/icons/icon.png"
+config/windows_native_icon="res://sprites/icons/windows_icon.ico"
 
 [dotnet]
 
