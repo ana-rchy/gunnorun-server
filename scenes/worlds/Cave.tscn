@@ -145,7 +145,7 @@ layer_0/tile_data = PackedInt32Array(327678, 65536, 3, 327679, 0, 0, 262144, 0, 
 [node name="Markers" type="Node2D" parent="."]
 
 [node name="Finish" type="Area2D" parent="Markers"]
-position = Vector2(5118, -3760)
+position = Vector2(-1, 0)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("2_ahthf")
