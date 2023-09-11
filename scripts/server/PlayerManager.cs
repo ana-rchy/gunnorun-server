@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Godot;
 using static Godot.GD;
 using static Godot.MultiplayerApi;
 using static Godot.MultiplayerPeer;
-using System;
-using System.Collections.Generic;
 using MsgPack.Serialization;
 
 public partial class PlayerManager : Node {

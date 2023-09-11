@@ -23,6 +23,10 @@ config/windows_native_icon="res://sprites/icons/windows_icon.ico"
 
 project/assembly_name="gunnorun server"
 
+[editor]
+
+run/main_run_args="world=CaveShort"
+
 [editor_plugins]
 
 enabled=PackedStringArray()

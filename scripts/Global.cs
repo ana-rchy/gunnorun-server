@@ -1,8 +1,14 @@
-using Godot;
 using System;
 using System.Collections.Generic;
+using Godot;
 
 public static class Global {
+    public const int DEFAULT_PORT = 29999;
+    public const int MAX_PEERS = 8;
+    public const float TICK_RATE = 1 / 60f;
+    public const string WORLD_PATH = "/root/World/";
+    public const string SERVER_PATH = "/root/Server/";
+
     public struct PlayerDataStruct {
         public PlayerDataStruct(string username, Color color) {
             Username = username;
@@ -13,16 +19,11 @@ public static class Global {
 
         public string Username;
         public Color Color;
-
         public bool ReadyStatus;
+
+        public Godot.Collections.Array<Node> UnpassedCheckpoints = new Godot.Collections.Array<Node>();
     }
     public static Dictionary<long, PlayerDataStruct> PlayersData;
-
-	public const int DEFAULT_PORT = 29999;
-    public const int MAX_PEERS = 8;
-    public const float TICK_RATE = 1 / 60f;
-    public const string WORLD_PATH = "/root/World/";
-    public const string SERVER_PATH = "/root/Server/";
 
     public static string GameState = "Lobby";
     public static string CurrentWorld = "Cave";

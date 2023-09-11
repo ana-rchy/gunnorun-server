@@ -1,10 +1,10 @@
+using System;
+using System.Threading;
+using System.Collections.Generic;
+using System.Text.Json;
 using Godot;
 using static Godot.GD;
 using static Godot.MultiplayerApi;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using MsgPack.Serialization;
 
 public partial class Server : Node {
 	public override void _Ready() {
@@ -28,9 +28,8 @@ public partial class Server : Node {
 	#region | signals
 
 	void _OnPeerConnected(long id) {
-		var playerDataSerializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
-		byte[] serializedPlayerData = playerDataSerializer.PackSingleObject(Global.PlayersData);
-		RpcId(id, nameof(Client_Setup), serializedPlayerData, Global.GameState);
+		string serializedPlayerData = JsonSerializer.Serialize<Dictionary<long, Global.PlayerDataStruct>>(Global.PlayersData);
+		RpcId(id, nameof(Client_Setup), serializedPlayerData);
 
 		Print("player ", id, " connected");
 	}
@@ -59,14 +58,14 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
 	#region | rpc
 
-	[Rpc] void Client_Setup(byte[] serializedPlayerData, string gameState) {}
-	[Rpc] void Client_NewPlayer(long id, string username, Color color, bool inLobby) {}
+	[Rpc] void Client_Setup(string serializedPlayerData) {}
+	[Rpc] void Client_NewPlayer(long id, string username, Color color) {}
 	[Rpc] void Client_PlayerLeft(long id, string gameState) {}
 
 	[Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
 		Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
 
-		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color, Global.GameState == "Lobby");
+		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color);
 	}
 
 	#endregion

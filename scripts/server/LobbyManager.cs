@@ -1,5 +1,5 @@
-using Godot;
 using System;
+using Godot;
 using static Godot.MultiplayerApi;
 
 public partial class LobbyManager : Node {

@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://y0ns50q3vcaa"]
+[gd_scene load_steps=14 format=3 uid="uid://y0ns50q3vcaa"]
 
 [ext_resource type="Texture2D" uid="uid://b76y88u6h7yif" path="res://sprites/tilesheets/cave.png" id="1_8dkv5"]
 [ext_resource type="Script" path="res://scripts/environment/FinishMarker.cs" id="2_ahthf"]
 [ext_resource type="Script" path="res://scripts/environment/LevelTimer.cs" id="3_ayh7y"]
+[ext_resource type="Script" path="res://scripts/environment/Checkpoints.cs" id="3_x5u81"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lkv5u"]
 texture = ExtResource("1_8dkv5")
@@ -132,6 +133,18 @@ width = 320
 height = 160
 fill_from = Vector2(1, 1)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wwx2x"]
+size = Vector2(160, 800)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4pji5"]
+size = Vector2(160, 800)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w5pxw"]
+size = Vector2(160, 1280)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wbtky"]
+size = Vector2(160, 160)
+
 [node name="World" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -145,7 +158,7 @@ layer_0/tile_data = PackedInt32Array(327678, 65536, 3, 327679, 0, 0, 262144, 0, 
 [node name="Markers" type="Node2D" parent="."]
 
 [node name="Finish" type="Area2D" parent="Markers"]
-position = Vector2(-1, 0)
+position = Vector2(5118, -3760)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("2_ahthf")
@@ -155,6 +168,41 @@ shape = SubResource("RectangleShape2D_poehd")
 
 [node name="Sprite2D" type="Sprite2D" parent="Markers/Finish"]
 texture = SubResource("GradientTexture2D_s4a0g")
+
+[node name="Checkpoints" type="Node2D" parent="Markers"]
+script = ExtResource("3_x5u81")
+
+[node name="1" type="Area2D" parent="Markers/Checkpoints"]
+position = Vector2(880, -1040)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Checkpoints/1"]
+shape = SubResource("RectangleShape2D_wwx2x")
+
+[node name="2" type="Area2D" parent="Markers/Checkpoints"]
+position = Vector2(-2320, 2000)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Checkpoints/2"]
+shape = SubResource("RectangleShape2D_4pji5")
+
+[node name="3" type="Area2D" parent="Markers/Checkpoints"]
+position = Vector2(-2162, 3520)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Checkpoints/3"]
+shape = SubResource("RectangleShape2D_w5pxw")
+
+[node name="4" type="Area2D" parent="Markers/Checkpoints"]
+position = Vector2(5038, 880)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Checkpoints/4"]
+shape = SubResource("RectangleShape2D_wbtky")
 
 [node name="LevelTimer" type="Node" parent="."]
 script = ExtResource("3_ayh7y")

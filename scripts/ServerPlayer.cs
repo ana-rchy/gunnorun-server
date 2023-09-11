@@ -1,5 +1,5 @@
-using Godot;
 using System;
+using Godot;
 using static Godot.GD;
 
 public partial class ServerPlayer : CharacterBody2D {
