@@ -16,3 +16,5 @@ script = ExtResource("3_bqfle")
 
 [node name="PlayerManager" type="Node" parent="."]
 script = ExtResource("3_lclok")
+
+[connection signal="GameStarted" from="LobbyManager" to="." method="_OnGameStart"]

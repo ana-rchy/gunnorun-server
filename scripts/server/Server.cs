@@ -53,6 +53,12 @@ public partial class Server : Node {
 		Print("player ", id, " disconnected");
 	}
 
+	void _OnGameStart(string worldName) {
+		Global.CurrentWorld = worldName;
+		var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorld + ".tscn").Instantiate();
+		GetNode("/root").CallDeferred("add_child", worldScene);
+	}
+
 	#endregion
 
 	//---------------------------------------------------------------------------------//
@@ -132,12 +138,6 @@ public partial class Server : Node {
 		var peer = new ENetMultiplayerPeer();
 		peer.CreateServer(port, peers);
 		Multiplayer.MultiplayerPeer = peer;
-	}
-
-	public void LoadWorld(string worldName) {
-		Global.CurrentWorld = worldName;
-		var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorld + ".tscn").Instantiate();
-		GetNode("/root").CallDeferred("add_child", worldScene);
 	}
 
 	#endregion

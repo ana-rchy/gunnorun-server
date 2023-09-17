@@ -4,6 +4,13 @@ using static Godot.MultiplayerApi;
 
 public partial class LobbyManager : Node {
     //---------------------------------------------------------------------------------//
+    #region | signals
+
+    [Signal] public delegate void GameStartedEventHandler(string worldName);
+
+    #endregion
+
+    //---------------------------------------------------------------------------------//
     #region | rpc
 
     [Rpc] void Client_UpdateStatus(long id, bool ready) {}
@@ -39,7 +46,7 @@ public partial class LobbyManager : Node {
         Global.GameState = "Ingame";
         Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
 
-        GetNode<Server>("/root/Server").LoadWorld(Global.CurrentWorld);
+        EmitSignal(SignalName.GameStarted, Global.CurrentWorld);
 
         foreach (var id in Global.PlayersData.Keys) {
             GetNode<PlayerManager>("../PlayerManager").CallDeferred("CreateNewServerPlayer", id);
