@@ -20,10 +20,9 @@ public static class Global {
         public string Username;
         public Color Color;
         public bool ReadyStatus;
-
-        public Godot.Collections.Array<Node> UnpassedCheckpoints = new Godot.Collections.Array<Node>();
     }
     public static Dictionary<long, PlayerDataStruct> PlayersData;
+    public static Dictionary<long, Godot.Collections.Array<Node>> PlayersUnpassedCheckpoints = new Dictionary<long, Godot.Collections.Array<Node>>();
 
     public static string GameState = "Lobby";
     public static string CurrentWorld = "Cave";
