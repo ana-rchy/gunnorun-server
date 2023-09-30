@@ -40,6 +40,7 @@ public partial class PlayerManager : Node {
     [Rpc] void Client_PlayerHit(long id, int damage) {}
     [Rpc] void Client_TracerShot(long id, float rotation, float range) {}
     [Rpc] void Client_PlayerFrameChanged(long id, int frame) {}
+    [Rpc] public void Client_LapChanged(int lap, int maxLaps) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
         var player = GetNode<ServerPlayer>(Global.WORLD_PATH + Multiplayer.GetRemoteSenderId().ToString());

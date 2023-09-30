@@ -22,7 +22,6 @@ public static class Global {
         public bool ReadyStatus;
     }
     public static Dictionary<long, PlayerDataStruct> PlayersData;
-    public static Dictionary<long, Godot.Collections.Array<Node>> PlayersUnpassedCheckpoints = new Dictionary<long, Godot.Collections.Array<Node>>();
 
     public static string GameState = "Lobby";
     public static string CurrentWorld = "Cave";
