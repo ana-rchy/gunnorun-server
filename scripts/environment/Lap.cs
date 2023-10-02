@@ -8,7 +8,7 @@ public partial class Lap : Node {
 
     public override void _Ready() {
         foreach (var playerID in Global.PlayersData.Keys) {
-            PlayersLapCounts.Add(playerID, 0);
+            PlayersLapCounts.Add(playerID, 1);
         }
     }
 
