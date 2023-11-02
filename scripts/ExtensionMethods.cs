@@ -4,6 +4,7 @@ using Godot;
 
 public static class ExtensionMethods {
     public static async Task Sleep(this Node node, float time) {
-        await node.ToSignal(node.GetTree().CreateTimer(time), "timeout");
+        var msTime = time * 1000f;
+        await Task.Delay((int) msTime);
     }
 }

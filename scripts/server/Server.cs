@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
-using System.Text.Json;
 using Godot;
 using static Godot.GD;
 using static Godot.MultiplayerApi;
@@ -24,63 +23,6 @@ public partial class Server : Node {
 		Multiplayer.PeerConnected += _OnPeerConnected;
 		Multiplayer.PeerDisconnected += _OnPeerDisconnected;
 	}
-
-	//---------------------------------------------------------------------------------//
-	#region | signals
-
-	void _OnPeerConnected(long id) {
-		var serializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
-		var serializedPlayerData = serializer.PackSingleObject(Global.PlayersData);
-
-		RpcId(id, nameof(Client_Setup), serializedPlayerData);
-
-		Print("player ", id, " connected");
-	}
-
-	void _OnPeerDisconnected(long id) {
-		Global.PlayersData.Remove(id);
-
-		Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
-
-		if (Global.GameState == "Ingame") {
-			GetNode(Global.WORLD_PATH + id).QueueFree();
-		}
-
-		if (Multiplayer.GetPeers().Length == 0) {
-			Global.GameState = "Lobby";
-			var world = GetNodeOrNull(Global.WORLD_PATH);
-			if (world != null) world.QueueFree();
-
-			Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
-		}
-
-		Print("player ", id, " disconnected");
-	}
-
-	void _OnGameStart(string worldName) {
-		Global.CurrentWorld = worldName;
-		var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorld + ".tscn").Instantiate();
-		GetNode("/root").CallDeferred("add_child", worldScene);
-	}
-
-	#endregion
-
-	//---------------------------------------------------------------------------------//
-	#region | rpc
-
-	[Rpc] void Client_Setup(byte[] serializedPlayerData) {}
-	[Rpc] void Client_NewPlayer(long id, string username, Color color) {}
-	[Rpc] void Client_PlayerLeft(long id, string gameState) {}
-
-	[Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
-		Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
-
-		Print(username);
-
-		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color);
-	}
-
-	#endregion
 
 	//---------------------------------------------------------------------------------//
 	#region | funcs
@@ -144,6 +86,57 @@ public partial class Server : Node {
 		var peer = new ENetMultiplayerPeer();
 		peer.CreateServer(port, peers);
 		Multiplayer.MultiplayerPeer = peer;
+	}
+
+	#endregion
+
+	//---------------------------------------------------------------------------------//
+	#region | rpc
+
+	[Rpc] void Client_Setup(byte[] serializedPlayerData) {}
+	[Rpc] void Client_NewPlayer(long id, string username, Color color) {}
+	[Rpc] void Client_PlayerLeft(long id, string gameState) {}
+
+	[Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
+		Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
+
+		Print(username);
+
+		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color);
+	}
+
+	#endregion
+
+	//---------------------------------------------------------------------------------//
+	#region | signals
+
+	void _OnPeerConnected(long id) {
+		var serializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
+		var serializedPlayerData = serializer.PackSingleObject(Global.PlayersData);
+
+		RpcId(id, nameof(Client_Setup), serializedPlayerData);
+
+		Print("player ", id, " connected");
+	}
+
+	void _OnPeerDisconnected(long id) {
+		Global.PlayersData.Remove(id);
+
+		Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
+
+		if (Global.GameState == "Ingame") {
+			GetNode(Global.WORLD_PATH + id).QueueFree();
+		}
+
+		if (Multiplayer.GetPeers().Length == 0) {
+			Global.GameState = "Lobby";
+			var world = GetNodeOrNull(Global.WORLD_PATH);
+			if (world != null) world.QueueFree();
+
+			Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
+		}
+
+		Print("player ", id, " disconnected");
 	}
 
 	#endregion

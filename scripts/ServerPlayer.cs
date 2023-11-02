@@ -1,10 +1,9 @@
 using System;
 using Godot;
-using static Godot.GD;
 
 public partial class ServerPlayer : CharacterBody2D {
     double Timer;
-    public Vector2 PuppetPosition;
+    public Vector2 PuppetPosition { get; set; }
 
     public override void _PhysicsProcess(double delta) {
         if (Timer >= Global.TICK_RATE) {

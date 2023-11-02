@@ -106,4 +106,6 @@ shape = SubResource("RectangleShape2D_sf2rc")
 [node name="LevelTimer" type="Node" parent="."]
 script = ExtResource("4_2kdlr")
 
+[connection signal="LapPassed" from="Markers/Lap" to="Markers/Checkpoints" method="_OnLapPassed"]
+[connection signal="PlayerWon" from="Markers/Lap" to="LevelTimer" method="_OnPlayerWon"]
 [connection signal="body_entered" from="Markers/Lap" to="Markers/Lap" method="_OnPlayerEntered"]

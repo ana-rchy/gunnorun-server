@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot;
 
 public partial class Checkpoints : Node {
-    public static Dictionary<long, List<Node>> PlayersUnpassedCheckpoints = new Dictionary<long, List<Node>>();
+    public static Dictionary<long, List<Node>> PlayersUnpassedCheckpoints { get; private set; } = new Dictionary<long, List<Node>>();
 
     public override void _Ready() {
         var allCheckpoints = new List<Node>(FindChildren("*", "Area2D"));
@@ -17,7 +17,21 @@ public partial class Checkpoints : Node {
         }
     }
 
-    public void RefreshCheckpoints(long playerID) {
+    //---------------------------------------------------------------------------------//
+    #region | funcs
+
+    void RefreshCheckpoints(long playerID) {
         PlayersUnpassedCheckpoints[playerID] = new List<Node>(FindChildren("*", "Area2D"));
     }
+
+    #endregion
+
+    //---------------------------------------------------------------------------------//
+    #region | signals
+
+    void _OnLapPassed(long playerID, int lapCount, int maxLaps) {
+        RefreshCheckpoints(playerID);
+    }
+
+    #endregion
 }

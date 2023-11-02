@@ -207,4 +207,5 @@ shape = SubResource("RectangleShape2D_wbtky")
 [node name="LevelTimer" type="Node" parent="."]
 script = ExtResource("3_ayh7y")
 
+[connection signal="PlayerWon" from="Markers/Finish" to="LevelTimer" method="_OnPlayerWon"]
 [connection signal="body_entered" from="Markers/Finish" to="Markers/Finish" method="_OnPlayerEntered"]

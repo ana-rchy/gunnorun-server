@@ -23,6 +23,6 @@ public static class Global {
     }
     public static Dictionary<long, PlayerDataStruct> PlayersData;
 
-    public static string GameState = "Lobby";
+    public static string GameState { get; set; } = "Lobby";
     public static string CurrentWorld = "Cave";
 }

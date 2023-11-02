@@ -1,12 +1,36 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using static Godot.MultiplayerApi;
 
 public partial class LobbyManager : Node {
     //---------------------------------------------------------------------------------//
-    #region | signals
+    #region | funcs
 
-    [Signal] public delegate void GameStartedEventHandler(string worldName);
+    bool CheckReadiness() {
+        bool allReady = true;
+        foreach (var player in Global.PlayersData.Values) {
+            if (!player.ReadyStatus) allReady = false;
+        }
+
+        if (allReady) {
+            StartGame();
+        }
+
+        return allReady;
+    }
+    
+    void StartGame() {
+        EmitSignal(SignalName.GameStarted, Global.CurrentWorld, new List<long>(Global.PlayersData.Keys).ToArray());
+
+        Global.GameState = "Ingame";
+        Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
+        // foreach (var id in Global.PlayersData.Keys) {
+        //     GetNode<PlayerManager>("../PlayerManager").CallDeferred("CreateNewServerPlayer", id);
+        // }
+
+        Rpc(nameof(Client_StartGame), Global.CurrentWorld);
+    }
 
     #endregion
 
@@ -29,30 +53,9 @@ public partial class LobbyManager : Node {
     #endregion
 
     //---------------------------------------------------------------------------------//
-    #region | funcs
+    #region | signals
 
-    bool CheckReadiness() {
-        bool allReady = true;
-        foreach (var player in Global.PlayersData.Values) {
-            if (!player.ReadyStatus) allReady = false;
-        }
-
-        if (allReady) StartGame();
-
-        return allReady;
-    }
-    
-    void StartGame() {
-        Global.GameState = "Ingame";
-        Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
-
-        EmitSignal(SignalName.GameStarted, Global.CurrentWorld);
-
-        foreach (var id in Global.PlayersData.Keys) {
-            GetNode<PlayerManager>("../PlayerManager").CallDeferred("CreateNewServerPlayer", id);
-        }
-        Rpc(nameof(Client_StartGame), Global.CurrentWorld);
-    }
+    [Signal] public delegate void GameStartedEventHandler(string worldName, long[] playerIDs);
 
     #endregion
 }
