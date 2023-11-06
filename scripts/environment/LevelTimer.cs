@@ -19,9 +19,5 @@ public partial class LevelTimer : Node {
         SetProcess(false);
     }
 
-    // public void StopTimer() {
-    //     SetProcess(false);
-    // }
-
     #endregion
 }

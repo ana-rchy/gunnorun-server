@@ -12,12 +12,8 @@ public partial class FinishMarker : Node {
 	[Signal] public delegate void PlayerWonEventHandler(long id, float time);
 
 	void _OnPlayerEntered(Node2D player) {
-		if (Checkpoints.PlayersUnpassedCheckpoints[long.Parse(player.Name)].Count == 0) {
-			//var matchManager = GetNode<MatchManager>(Global.SERVER_PATH + "MatchManager");
-			//GetNode<LevelTimer>(Global.WORLD_PATH + "LevelTimer").StopTimer();
-			
+		if (Checkpoints.PlayersUnpassedCheckpoints[long.Parse(player.Name)].Count == 0) {			
 			EmitSignal(SignalName.PlayerWon, long.Parse(player.Name), LevelTimer.Time);
-			//matchManager.Rpc(nameof(matchManager.Client_PlayerWon), id, levelTimer.Time);
 		}
 	}
 

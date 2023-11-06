@@ -25,9 +25,6 @@ public partial class LobbyManager : Node {
 
         Global.GameState = "Ingame";
         Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
-        // foreach (var id in Global.PlayersData.Keys) {
-        //     GetNode<PlayerManager>("../PlayerManager").CallDeferred("CreateNewServerPlayer", id);
-        // }
 
         Rpc(nameof(Client_StartGame), Global.CurrentWorld);
     }

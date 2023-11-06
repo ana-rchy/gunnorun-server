@@ -27,18 +27,11 @@ public partial class Lap : Node {
         if (Checkpoints.PlayersUnpassedCheckpoints[playerID].Count == 0) {
             if (PlayersLapCounts[playerID] < MaxLaps) {
                 PlayersLapCounts[playerID]++;
-                //EmitSignal(SignalName.LapPassed, playerID);
-                //GetNode<Checkpoints>("../Checkpoints").RefreshCheckpoints(playerID);
-
             } else {
-                //GetNode<LevelTimer>(Global.WORLD_PATH + "LevelTimer").StopTimer();
                 EmitSignal(SignalName.PlayerWon, playerID, LevelTimer.Time);
-                //matchManager.Rpc(nameof(matchManager.Client_PlayerWon), id, levelTimer.Time);
             }
 
             EmitSignal(SignalName.LapPassed, PlayersLapCounts[playerID], MaxLaps);
-            // var playerManager = GetNode<PlayerManager>(Global.SERVER_PATH + "PlayerManager");
-            // playerManager.RpcId(playerID, nameof(playerManager.Client_LapChanged), PlayersLapCounts[playerID], MaxLaps);
         }
     }
 
