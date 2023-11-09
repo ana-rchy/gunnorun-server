@@ -7,8 +7,8 @@ public partial class Lap : Node {
     public static Dictionary<long, byte> PlayersLapCounts { get; private set; } = new Dictionary<long, byte>();
 
     public override void _Ready() {
-        LapPassed += GetNode<PlayerManager>(Global.SERVER_PATH + "PlayerManager")._OnLapPassed;
-        PlayerWon += GetNode<MatchManager>(Global.SERVER_PATH + "MatchManager")._OnPlayerWon;
+        LapPassed += GetNode<PlayerManager>($"{Global.SERVER_PATH}/PlayerManager")._OnLapPassed;
+        PlayerWon += GetNode<MatchManager>($"{Global.SERVER_PATH}/MatchManager")._OnPlayerWon;
 
         foreach (var playerID in Global.PlayersData.Keys) {
             PlayersLapCounts.Add(playerID, 1);

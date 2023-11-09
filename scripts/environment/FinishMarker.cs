@@ -3,7 +3,7 @@ using System;
 
 public partial class FinishMarker : Node {
 	public override void _Ready() {
-		PlayerWon += GetNode<MatchManager>(Global.SERVER_PATH + "MatchManager")._OnPlayerWon;
+		PlayerWon += GetNode<MatchManager>($"{Global.SERVER_PATH}/MatchManager")._OnPlayerWon;
 	}
 
 	//---------------------------------------------------------------------------------//

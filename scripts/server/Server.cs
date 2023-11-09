@@ -116,7 +116,7 @@ public partial class Server : Node {
 
 		RpcId(id, nameof(Client_Setup), serializedPlayerData);
 
-		Print("player ", id, " connected");
+		Print($"player {id} connected");
 	}
 
 	void _OnPeerDisconnected(long id) {
@@ -136,7 +136,7 @@ public partial class Server : Node {
 			Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
 		}
 
-		Print("player ", id, " disconnected");
+		Print($"player {id} disconnected");
 	}
 
 	#endregion

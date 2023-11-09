@@ -17,7 +17,7 @@ public partial class MatchManager : Node {
 
 	void _OnGameStarted(string worldName, long[] playerIDs) {
 		Global.CurrentWorld = worldName;
-		var worldScene = Load<PackedScene>("res://scenes/worlds/" + Global.CurrentWorld + ".tscn").Instantiate();
+		var worldScene = Load<PackedScene>($"res://scenes/worlds/{Global.CurrentWorld}.tscn").Instantiate();
 		GetNode("/root").CallDeferred("add_child", worldScene);
 
 		CallDeferred("emit_signal", SignalName.WorldLoaded, playerIDs);
