@@ -52,6 +52,7 @@ public partial class PlayerManager : Node {
     [Rpc] void Client_PlayerHPChanged(long id, int newHP) {}
     [Rpc] void Client_PlayerFrameChanged(long id, int frame) {}
     [Rpc] void Client_LapChanged(int lap, int maxLaps) {}
+    [Rpc] void Client_PlayerOnGround(long id, bool onGround, float xVel) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
         var player = GetNode<ServerPlayer>($"{Global.WORLD_PATH}/{Multiplayer.GetRemoteSenderId()}");
@@ -59,6 +60,7 @@ public partial class PlayerManager : Node {
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_WeaponShot(string name, float rotation, float range) {
+        GD.Print("a");
         Rpc(nameof(Client_WeaponShot), Multiplayer.GetRemoteSenderId(), name, rotation, range);
     }
 
@@ -72,6 +74,10 @@ public partial class PlayerManager : Node {
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerFrameChanged(int frame) {
         Rpc(nameof(Client_PlayerFrameChanged), Multiplayer.GetRemoteSenderId(), frame);
+    }
+
+    [Rpc(RpcMode.AnyPeer)] void Server_PlayerOnGround(bool onGround, float xVel) {
+        Rpc(nameof(Client_PlayerOnGround), Multiplayer.GetRemoteSenderId(), onGround, xVel);
     }
 
     #endregion
