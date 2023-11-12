@@ -60,7 +60,7 @@ public partial class Server : Node {
 			}
 		}
 
-		Print(port + "\t" + peers);
+		Print($"{port}\t{peers}");
 	}
 
 	void UpnpOpenPort(Object portObj) {
@@ -125,7 +125,7 @@ public partial class Server : Node {
 		Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
 
 		if (Global.GameState == "Ingame") {
-			GetNode(Global.WORLD_PATH + id).QueueFree();
+			GetNode($"{Global.WORLD_PATH}/{id}").QueueFree();
 		}
 
 		if (Multiplayer.GetPeers().Length == 0) {
