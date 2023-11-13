@@ -17,16 +17,16 @@ public partial class MatchManager : Node {
 
 	[Signal] public delegate void WorldLoadedEventHandler(long[] playerIDs);
 
+	public void _OnPlayerWon(long id, float time) {
+		Rpc(nameof(Client_PlayerWon), id, time);
+	}
+
 	void _OnGameStarted(string worldName, long[] playerIDs) {
 		Global.CurrentWorld = worldName;
 		var worldScene = Load<PackedScene>($"{WorldDir}/{Global.CurrentWorld}.tscn").Instantiate();
 		GetNode("/root").CallDeferred("add_child", worldScene);
 
 		CallDeferred("emit_signal", SignalName.WorldLoaded, playerIDs);
-	}
-
-	public void _OnPlayerWon(long id, float time) {
-		Rpc(nameof(Client_PlayerWon), id, time);
 	}
 
 	#endregion

@@ -87,14 +87,14 @@ public partial class PlayerManager : Node {
     //---------------------------------------------------------------------------------//
     #region | signals
 
+    public void _OnLapPassed(long playerID, int lapCount, int maxLaps) {
+        RpcId(playerID, nameof(Client_LapChanged), lapCount, maxLaps);
+    }
+
     void _OnWorldLoaded(long[] playerIDs) {
         foreach (var id in playerIDs) {
             CreateNewServerPlayer(id);
         }
-    }
-
-    public void _OnLapPassed(long playerID, int lapCount, int maxLaps) {
-        RpcId(playerID, nameof(Client_LapChanged), lapCount, maxLaps);
     }
 
     #endregion
