@@ -7,6 +7,8 @@ using static Godot.MultiplayerPeer;
 using MsgPack.Serialization;
 
 public partial class PlayerManager : Node {
+    [Export(PropertyHint.File)] string PlayerScene;
+
     double TickTimer;
     public override void _Process(double delta) {
         TickTimer += delta;
@@ -34,7 +36,7 @@ public partial class PlayerManager : Node {
     #region | funcs
 
     void CreateNewServerPlayer(long id) {
-        var newPlayer = Load<PackedScene>("res://scenes/player/Player.tscn").Instantiate();
+        var newPlayer = Load<PackedScene>(PlayerScene).Instantiate();
 
         newPlayer.Name = id.ToString();
 

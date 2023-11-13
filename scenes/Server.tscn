@@ -10,12 +10,14 @@ script = ExtResource("1_t6d7r")
 
 [node name="MatchManager" type="Node" parent="."]
 script = ExtResource("2_q7ehu")
+WorldDir = "res://scenes/worlds"
 
 [node name="LobbyManager" type="Node" parent="."]
 script = ExtResource("3_bqfle")
 
 [node name="PlayerManager" type="Node" parent="."]
 script = ExtResource("3_lclok")
+PlayerScene = "res://scenes/player/Player.tscn"
 
 [connection signal="WorldLoaded" from="MatchManager" to="PlayerManager" method="_OnWorldLoaded"]
 [connection signal="GameStarted" from="LobbyManager" to="MatchManager" method="_OnGameStarted"]
