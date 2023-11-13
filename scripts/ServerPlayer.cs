@@ -3,15 +3,15 @@ using Godot;
 
 public partial class ServerPlayer : CharacterBody2D {
     public Vector2 PuppetPosition { get; set; }
-    double Timer;
+    double _timer;
 
     public override void _PhysicsProcess(double delta) {
-        if (Timer >= Global.TICK_RATE) {
+        if (_timer >= Global.TICK_RATE) {
             var tween = CreateTween();
             tween.TweenProperty(this, "global_position", PuppetPosition, Global.TICK_RATE);
-            Timer -= Global.TICK_RATE;
+            _timer -= Global.TICK_RATE;
         }
         
-        Timer += delta;
+        _timer += delta;
     }
 }

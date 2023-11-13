@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot;
 
 public partial class Lap : Node {
-    [Export] int MaxLaps;
+    [Export] int _maxLaps;
     public static Dictionary<long, byte> PlayersLapCounts { get; private set; } = new Dictionary<long, byte>();
 
     public override void _Ready() {
@@ -25,13 +25,13 @@ public partial class Lap : Node {
         var playerID = long.Parse(player.Name);
 
         if (Checkpoints.PlayersUnpassedCheckpoints[playerID].Count == 0) {
-            if (PlayersLapCounts[playerID] < MaxLaps) {
+            if (PlayersLapCounts[playerID] < _maxLaps) {
                 PlayersLapCounts[playerID]++;
             } else {
                 EmitSignal(SignalName.PlayerWon, playerID, LevelTimer.Time);
             }
 
-            EmitSignal(SignalName.LapPassed, PlayersLapCounts[playerID], MaxLaps);
+            EmitSignal(SignalName.LapPassed, PlayersLapCounts[playerID], _maxLaps);
         }
     }
 

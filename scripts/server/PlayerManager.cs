@@ -7,14 +7,14 @@ using static Godot.MultiplayerPeer;
 using MsgPack.Serialization;
 
 public partial class PlayerManager : Node {
-    [Export(PropertyHint.File)] string PlayerScene;
+    [Export(PropertyHint.File)] string _playerScene;
 
-    double TickTimer;
+    double _tickTimer;
     public override void _Process(double delta) {
-        TickTimer += delta;
+        _tickTimer += delta;
 
-        if (TickTimer > Global.TICK_RATE) {
-            TickTimer -= Global.TICK_RATE;
+        if (_tickTimer > Global.TICK_RATE) {
+            _tickTimer -= Global.TICK_RATE;
             Dictionary<long, Vector2> playerPositions = new Dictionary<long, Vector2>();
 
             foreach (var kvp in Global.PlayersData) {
@@ -36,7 +36,7 @@ public partial class PlayerManager : Node {
     #region | funcs
 
     void CreateNewServerPlayer(long id) {
-        var newPlayer = Load<PackedScene>(PlayerScene).Instantiate();
+        var newPlayer = Load<PackedScene>(_playerScene).Instantiate();
 
         newPlayer.Name = id.ToString();
 
