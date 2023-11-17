@@ -90,8 +90,8 @@ public partial class PlayerManager : Node {
         RpcId(playerID, nameof(Client_LapChanged), lapCount, maxLaps);
     }
 
-    void _OnWorldLoaded(long[] playerIDs) {
-        foreach (var id in playerIDs) {
+    void _OnWorldLoaded() {
+        foreach (var id in Global.PlayersData.Keys) {
             CreateNewServerPlayer(id);
         }
     }

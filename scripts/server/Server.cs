@@ -9,7 +9,7 @@ using MsgPack.Serialization;
 public partial class Server : Node {
 	public override void _Ready() {
 		int peers, port;
-		GetServerArguments(out Global.CurrentWorld, out port, out peers);
+		GetServerArguments(out Global.Worlds, out port, out peers);
 		Global.PlayersData = new Dictionary<long, Global.PlayerDataStruct>();
 		
 		// start UPNP
@@ -27,9 +27,9 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
 	#region | funcs
 
-	void GetServerArguments(out string world, out int port, out int peers) {
+	void GetServerArguments(out string[] world, out int port, out int peers) {
 		// default values
-		world = Global.CurrentWorld;
+		world = Global.Worlds;
 		port = Global.DEFAULT_PORT;
 		peers = Global.MAX_PEERS;
 
@@ -43,7 +43,11 @@ public partial class Server : Node {
 				switch(subArgs[0]) {
 					case ("world"):
 						error = false;
-						world = subArgs[1];
+						if (subArgs[1] == "Rotation") {
+							world = new string[] { "Cave", "CaveShort", "Loop" };
+						} else {
+							world[0] = subArgs[1];
+						}
 						break;
 					case ("port"):
 						error = !int.TryParse(subArgs[1], out port);
@@ -128,7 +132,9 @@ public partial class Server : Node {
 		if (Multiplayer.GetPeers().Length == 0) {
 			Global.GameState = "Lobby";
 			var world = GetNodeOrNull(Global.WORLD_PATH);
-			if (world != null) world.QueueFree();
+			if (world != null) {
+				world.QueueFree();
+			}
 
 			Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
 		}

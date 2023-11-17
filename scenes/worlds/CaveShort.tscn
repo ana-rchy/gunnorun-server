@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsow4e3jg245m"]
+[gd_scene load_steps=13 format=3 uid="uid://bsow4e3jg245m"]
 
 [ext_resource type="Texture2D" uid="uid://b76y88u6h7yif" path="res://sprites/tilesheets/cave.png" id="1_ep7ms"]
+[ext_resource type="Script" path="res://scripts/environment/World.cs" id="1_v2h48"]
 [ext_resource type="Script" path="res://scripts/environment/FinishMarker.cs" id="2_0kxfj"]
 [ext_resource type="Script" path="res://scripts/environment/LevelTimer.cs" id="3_eb8e5"]
 [ext_resource type="Script" path="res://scripts/environment/Checkpoints.cs" id="3_v5wxk"]
@@ -138,7 +139,9 @@ size = Vector2(160, 800)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8n8ai"]
 size = Vector2(160, 800)
 
-[node name="World" type="Node2D"]
+[node name="World" type="Node2D" node_paths=PackedStringArray("_finishTimer")]
+script = ExtResource("1_v2h48")
+_finishTimer = NodePath("FinishTimer")
 
 [node name="TileMap" type="TileMap" parent="."]
 texture_filter = 1
@@ -183,6 +186,9 @@ shape = SubResource("RectangleShape2D_8n8ai")
 
 [node name="LevelTimer" type="Node" parent="."]
 script = ExtResource("3_eb8e5")
+
+[node name="FinishTimer" type="Timer" parent="."]
+wait_time = 3.0
 
 [connection signal="PlayerWon" from="Markers/Finish" to="LevelTimer" method="_OnPlayerWon"]
 [connection signal="body_entered" from="Markers/Finish" to="Markers/Finish" method="_OnPlayerEntered"]

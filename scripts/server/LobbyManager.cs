@@ -21,12 +21,14 @@ public partial class LobbyManager : Node {
     }
     
     void StartGame() {
-        EmitSignal(SignalName.GameStarted, Global.CurrentWorld, new List<long>(Global.PlayersData.Keys).ToArray());
+        EmitSignal(SignalName.GameStarted, Global.Worlds[Global.WorldsIndex],
+                new List<long>(Global.PlayersData.Keys).ToArray());
 
         Global.GameState = "Ingame";
         Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
 
-        Rpc(nameof(Client_StartGame), Global.CurrentWorld);
+        Rpc(nameof(Client_StartGame), Global.Worlds[Global.WorldsIndex % Global.Worlds.Length]);
+        Global.WorldsIndex++;
     }
 
     #endregion

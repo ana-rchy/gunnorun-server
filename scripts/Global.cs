@@ -25,5 +25,6 @@ public static class Global {
     public static Dictionary<long, PlayerDataStruct> PlayersData;
 
     public static string GameState { get; set; } = "Lobby";
-    public static string CurrentWorld = "Cave"; // keep public so it can be used as an out param
+    public static string[] Worlds = new string[] { "Cave" }; // keep public so it can be used as an out param
+    public static int WorldsIndex = 0;
 }
