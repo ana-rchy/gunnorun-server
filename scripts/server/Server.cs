@@ -99,9 +99,6 @@ public partial class Server : Node {
 
 	[Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
 		Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
-
-		Print(username);
-
 		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color);
 	}
 

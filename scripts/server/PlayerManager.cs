@@ -62,7 +62,6 @@ public partial class PlayerManager : Node {
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_WeaponShot(string name, float rotation, float range) {
-        GD.Print("a");
         Rpc(nameof(Client_WeaponShot), Multiplayer.GetRemoteSenderId(), name, rotation, range);
     }
 
