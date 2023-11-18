@@ -121,16 +121,18 @@ texture = ExtResource("1_ep7ms")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_lkv5u")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_poehd"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l6wrm"]
 size = Vector2(160, 800)
 
-[sub_resource type="Gradient" id="Gradient_e8rkh"]
-colors = PackedColorArray(0, 1, 0.0823529, 1, 0, 0, 0, 0)
+[sub_resource type="Gradient" id="Gradient_8brp1"]
+colors = PackedColorArray(0, 0, 0, 0, 0, 1, 0.0823529, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_r52tf"]
-gradient = SubResource("Gradient_e8rkh")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_630sl"]
+gradient = SubResource("Gradient_8brp1")
 width = 160
 height = 800
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bqnpb"]
 size = Vector2(160, 800)
@@ -157,10 +159,10 @@ script = ExtResource("2_0kxfj")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Markers/Finish"]
 visible = false
-shape = SubResource("RectangleShape2D_poehd")
+shape = SubResource("RectangleShape2D_l6wrm")
 
 [node name="Sprite2D" type="Sprite2D" parent="Markers/Finish"]
-texture = SubResource("GradientTexture2D_r52tf")
+texture = SubResource("GradientTexture2D_630sl")
 
 [node name="Checkpoints" type="Node2D" parent="Markers"]
 script = ExtResource("3_v5wxk")
@@ -184,5 +186,4 @@ shape = SubResource("RectangleShape2D_8n8ai")
 [node name="LevelTimer" type="Node" parent="."]
 script = ExtResource("3_eb8e5")
 
-[connection signal="PlayerWon" from="Markers/Finish" to="LevelTimer" method="_OnPlayerWon"]
-[connection signal="body_entered" from="Markers/Finish" to="Markers/Finish" method="_OnPlayerEntered"]
+[connection signal="body_entered" from="Markers/Finish" to="Markers/Finish" method="_OnPlayerEntered" flags=18]

@@ -22,9 +22,7 @@ public partial class LobbyManager : Node {
     
     void StartGame() {
         EmitSignal(SignalName.GameStarted);
-
         Global.GameState = "Ingame";
-        Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
     }
 
     #endregion

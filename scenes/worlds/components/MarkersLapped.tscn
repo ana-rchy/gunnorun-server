@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://cghadbs8kv7ah"]
+
+[ext_resource type="Script" path="res://scripts/environment/Lap.cs" id="1_flxan"]
+[ext_resource type="Script" path="res://scripts/environment/Checkpoints.cs" id="2_2cqis"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6yxup"]
+size = Vector2(160, 800)
+
+[sub_resource type="Gradient" id="Gradient_061wi"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0, 0.682353, 1, 0, 0, 0.682353, 1, 1, 0, 0.682353, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wuw6g"]
+gradient = SubResource("Gradient_061wi")
+
+[node name="Markers" type="Node2D"]
+
+[node name="Lap" type="Area2D" parent="."]
+position = Vector2(0, -1040)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_flxan")
+_maxLaps = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lap"]
+shape = SubResource("RectangleShape2D_6yxup")
+
+[node name="Sprite2D" type="Sprite2D" parent="Lap"]
+position = Vector2(1.19209e-06, -1.04904e-05)
+scale = Vector2(2.5, 12.5)
+texture = SubResource("GradientTexture2D_wuw6g")
+
+[node name="Checkpoints" type="Node2D" parent="."]
+script = ExtResource("2_2cqis")
+
+[connection signal="LapPassed" from="Lap" to="Checkpoints" method="_OnLapPassed"]
+[connection signal="body_entered" from="Lap" to="Lap" method="_OnPlayerEntered"]

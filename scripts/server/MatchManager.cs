@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Godot;
 using static Godot.GD;
 
@@ -14,9 +13,20 @@ public partial class MatchManager : Node {
 	//---------------------------------------------------------------------------------//
 	#region | funcs
 
+	string GetRandomWorld() {
+		Random rand = new();
+		string[] worlds = DirAccess.GetFilesAt(_worldDir);
+
+		return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
+	}
+
 	void LoadWorld(string worldName) {
+		if (this.GetNodeConst("WORLD") != null) {
+			this.GetNodeConst("WORLD").Free();
+		}
+
 		var world = Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
-		GetNode("/root").CallDeferred("add_child", world);
+		GetNode("/root").AddChild(world);
 
 		CallDeferred("emit_signal", SignalName.WorldLoaded); // add puppet players
 	}
@@ -27,7 +37,7 @@ public partial class MatchManager : Node {
 	#region | rpc
 
 	[Rpc] void Client_PlayerWon(long id, double time) {}
-	[Rpc] void Client_LoadWorld(string worldName) {}
+	[Rpc] void Client_LoadWorld(string worldPath) {}
 
 	#endregion
 
@@ -36,25 +46,23 @@ public partial class MatchManager : Node {
 
 	[Signal] public delegate void WorldLoadedEventHandler();
 
-	public void _OnGameStarted() {
-		var worldName = Global.Worlds[Global.WorldsIndex % Global.Worlds.Length];
-		Global.WorldsIndex++;
-
-		LoadWorld(worldName);
-		Rpc(nameof(Client_LoadWorld), worldName);
-	}
-
 	public void _OnPlayerWon(long id, float time) {
 		_finishTimer.Start();
 		Rpc(nameof(Client_PlayerWon), id, time);
 	}
 
-	public void _OnFinishTimeout() {
-		var worldName = Global.Worlds[Global.WorldsIndex % Global.Worlds.Length];
-		Global.WorldsIndex++;
+	void _OnGameStarted() {
+		var world = Global.CurrentWorld == "Random" ? GetRandomWorld() : Global.CurrentWorld;
 
-		LoadWorld(worldName);
-		Rpc(nameof(Client_LoadWorld), worldName);
+		LoadWorld(world);
+		Rpc(nameof(Client_LoadWorld), world);
+	}
+
+	void _OnFinishTimeout() {
+		var world = Global.CurrentWorld == "Random" ? GetRandomWorld() : Global.CurrentWorld;
+
+		LoadWorld(world);
+		Rpc(nameof(Client_LoadWorld), world);
 	}
 
 	#endregion

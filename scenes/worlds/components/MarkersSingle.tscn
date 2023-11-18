@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bu7aaca78gysu"]
+
+[ext_resource type="Script" path="res://scripts/environment/FinishMarker.cs" id="1_2siyk"]
+[ext_resource type="Script" path="res://scripts/environment/Checkpoints.cs" id="2_2ijy1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l6wrm"]
+size = Vector2(320, 160)
+
+[sub_resource type="Gradient" id="Gradient_8brp1"]
+colors = PackedColorArray(0, 0, 0, 0, 0, 1, 0.0823529, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_630sl"]
+gradient = SubResource("Gradient_8brp1")
+width = 320
+height = 160
+fill_from = Vector2(1, 1)
+
+[node name="Markers" type="Node2D"]
+
+[node name="Finish" type="Area2D" parent="."]
+position = Vector2(5118, -3760)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_2siyk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Finish"]
+shape = SubResource("RectangleShape2D_l6wrm")
+
+[node name="Sprite2D" type="Sprite2D" parent="Finish"]
+texture = SubResource("GradientTexture2D_630sl")
+
+[node name="Checkpoints" type="Node2D" parent="."]
+script = ExtResource("2_2ijy1")
+
+[connection signal="body_entered" from="Finish" to="Finish" method="_OnPlayerEntered"]

@@ -9,6 +9,10 @@ using MsgPack.Serialization;
 public partial class PlayerManager : Node {
     [Export(PropertyHint.File)] string _playerScene;
 
+    public override void _Ready() {
+        Paths.AddNodePath("PLAYER_MANAGER", GetPath());
+    }
+
     double _tickTimer;
     public override void _Process(double delta) {
         _tickTimer += delta;
@@ -19,7 +23,7 @@ public partial class PlayerManager : Node {
 
             foreach (var kvp in Global.PlayersData) {
                 var id = kvp.Key;
-                var player = GetNodeOrNull<Node2D>($"{Global.WORLD_PATH}/{id}");
+                var player = GetNodeOrNull<Node2D>($"{Paths.GetNodePath("WORLD")}/{id}");
                 if (player != null) {
                     playerPositions.TryAdd(id, player.GlobalPosition);
                 }
@@ -40,7 +44,7 @@ public partial class PlayerManager : Node {
 
         newPlayer.Name = id.ToString();
 
-        GetNode(Global.WORLD_PATH).CallDeferred("add_child", newPlayer);
+        this.GetNodeConst("WORLD").CallDeferred("add_child", newPlayer);
     }
 
     #endregion
@@ -57,7 +61,7 @@ public partial class PlayerManager : Node {
     [Rpc] void Client_PlayerOnGround(long id, bool onGround, float xVel) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
-        var player = GetNode<ServerPlayer>($"{Global.WORLD_PATH}/{Multiplayer.GetRemoteSenderId()}");
+        var player = GetNode<ServerPlayer>($"{Paths.GetNodePath("WORLD")}/{Multiplayer.GetRemoteSenderId()}");
         player.PuppetPosition = position;
     }
 

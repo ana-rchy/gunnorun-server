@@ -9,7 +9,7 @@ using MsgPack.Serialization;
 public partial class Server : Node {
 	public override void _Ready() {
 		int peers, port;
-		GetServerArguments(out Global.Worlds, out port, out peers);
+		GetServerArguments(out Global.CurrentWorld, out port, out peers);
 		Global.PlayersData = new Dictionary<long, Global.PlayerDataStruct>();
 		
 		// start UPNP
@@ -27,9 +27,9 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
 	#region | funcs
 
-	void GetServerArguments(out string[] world, out int port, out int peers) {
+	void GetServerArguments(out string world, out int port, out int peers) {
 		// default values
-		world = Global.Worlds;
+		world = Global.CurrentWorld;
 		port = Global.DEFAULT_PORT;
 		peers = Global.MAX_PEERS;
 
@@ -43,11 +43,7 @@ public partial class Server : Node {
 				switch(subArgs[0]) {
 					case ("world"):
 						error = false;
-						if (subArgs[1] == "Rotation") {
-							world = new string[] { "Cave", "CaveShort", "Loop" };
-						} else {
-							world[0] = subArgs[1];
-						}
+						world = subArgs[1];
 						break;
 					case ("port"):
 						error = !int.TryParse(subArgs[1], out port);
@@ -121,17 +117,17 @@ public partial class Server : Node {
 	}
 
 	void _OnPeerDisconnected(long id) {
-		Global.PlayersData.Remove(id);
-
 		Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
 
+		Global.PlayersData.Remove(id);
+
 		if (Global.GameState == "Ingame") {
-			GetNode($"{Global.WORLD_PATH}/{id}").QueueFree();
+			GetNode($"{Paths.GetNodePath("WORLD")}/{id}").QueueFree();
 		}
 
 		if (Multiplayer.GetPeers().Length == 0) {
 			Global.GameState = "Lobby";
-			var world = GetNodeOrNull(Global.WORLD_PATH);
+			var world = this.GetNodeConst("WORLD");
 			if (world != null) {
 				world.QueueFree();
 			}

@@ -4,6 +4,10 @@ using System;
 public partial class LevelTimer : Node {
     public static double Time { get; private set; }
 
+    public override void _EnterTree() {
+        Paths.AddNodePath("LEVEL_TIMER", GetPath());
+    }
+
     public override void _Ready() {
         Time = 0;
     }
