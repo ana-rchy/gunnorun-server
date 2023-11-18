@@ -21,14 +21,10 @@ public partial class LobbyManager : Node {
     }
     
     void StartGame() {
-        EmitSignal(SignalName.GameStarted, Global.Worlds[Global.WorldsIndex],
-                new List<long>(Global.PlayersData.Keys).ToArray());
+        EmitSignal(SignalName.GameStarted);
 
         Global.GameState = "Ingame";
         Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
-
-        Rpc(nameof(Client_StartGame), Global.Worlds[Global.WorldsIndex % Global.Worlds.Length]);
-        Global.WorldsIndex++;
     }
 
     #endregion
@@ -37,7 +33,6 @@ public partial class LobbyManager : Node {
     #region | rpc
 
     [Rpc] void Client_UpdateStatus(long id, bool ready) {}
-    [Rpc] void Client_StartGame(string worldName) {}
 
     [Rpc(RpcMode.AnyPeer)] void Server_UpdateStatus(bool ready) {
         var player = Global.PlayersData[Multiplayer.GetRemoteSenderId()];
@@ -54,7 +49,7 @@ public partial class LobbyManager : Node {
     //---------------------------------------------------------------------------------//
     #region | signals
 
-    [Signal] public delegate void GameStartedEventHandler(string worldName, long[] playerIDs);
+    [Signal] public delegate void GameStartedEventHandler();
 
     #endregion
 }

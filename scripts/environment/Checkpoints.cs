@@ -8,7 +8,7 @@ public partial class Checkpoints : Node {
     public override void _Ready() {
         var allCheckpoints = new List<Node>(FindChildren("*", "Area2D"));
         foreach (var playerID in Global.PlayersData.Keys) {
-            PlayersUnpassedCheckpoints.Add(playerID, allCheckpoints);
+            PlayersUnpassedCheckpoints.TryAdd(playerID, allCheckpoints);
         }
 
         foreach (Area2D checkpoint in allCheckpoints) {

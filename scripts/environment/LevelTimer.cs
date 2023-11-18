@@ -15,8 +15,9 @@ public partial class LevelTimer : Node {
     //---------------------------------------------------------------------------------//
     #region | signals
 
-    void _OnPlayerWon(long id, float time) {
+    public void _OnPlayerWon(long id, float time) {
         SetProcess(false);
+        Time = 0;
     }
 
     #endregion

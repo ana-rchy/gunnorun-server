@@ -8,9 +8,10 @@
 [node name="Server" type="Node"]
 script = ExtResource("1_t6d7r")
 
-[node name="MatchManager" type="Node" parent="."]
+[node name="MatchManager" type="Node" parent="." node_paths=PackedStringArray("_finishTimer")]
 script = ExtResource("2_q7ehu")
 _worldDir = "res://scenes/worlds"
+_finishTimer = NodePath("../FinishTimer")
 
 [node name="LobbyManager" type="Node" parent="."]
 script = ExtResource("3_bqfle")
@@ -19,5 +20,10 @@ script = ExtResource("3_bqfle")
 script = ExtResource("3_lclok")
 _playerScene = "res://scenes/player/Player.tscn"
 
+[node name="FinishTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
 [connection signal="WorldLoaded" from="MatchManager" to="PlayerManager" method="_OnWorldLoaded"]
 [connection signal="GameStarted" from="LobbyManager" to="MatchManager" method="_OnGameStarted"]
+[connection signal="timeout" from="FinishTimer" to="MatchManager" method="_OnFinishTimeout"]
