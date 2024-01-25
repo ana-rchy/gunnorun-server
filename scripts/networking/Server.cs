@@ -54,7 +54,7 @@ public partial class Server : Node {
 				}
 
 				if (error) {
-					PushError("enter an actual numerical value");
+					PushError("enter an actual value");
 					GetTree().Quit();
 				}
 			}

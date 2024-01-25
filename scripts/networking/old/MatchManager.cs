@@ -3,7 +3,7 @@ using Godot;
 using static Godot.GD;
 
 public partial class MatchManager : Node {
-	[Export(PropertyHint.Dir)] string _worldDir;
+	[Export(PropertyHint.Dir)] static string _worldDir;
 	[Export] Timer _finishTimer;
 
 	public override void _Ready() {
@@ -13,7 +13,7 @@ public partial class MatchManager : Node {
 	//---------------------------------------------------------------------------------//
 	#region | funcs
 
-	string GetRandomWorld() {
+	public static string GetRandomWorld() {
 		Random rand = new();
 		string[] worlds = DirAccess.GetFilesAt(_worldDir);
 

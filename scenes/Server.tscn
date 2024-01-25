@@ -1,29 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4e8cwpjra8tc"]
+[gd_scene load_steps=2 format=3 uid="uid://lrgun00rx4i2"]
 
-[ext_resource type="Script" path="res://scripts/server/Server.cs" id="1_t6d7r"]
-[ext_resource type="Script" path="res://scripts/server/MatchManager.cs" id="2_q7ehu"]
-[ext_resource type="Script" path="res://scripts/server/LobbyManager.cs" id="3_bqfle"]
-[ext_resource type="Script" path="res://scripts/server/PlayerManager.cs" id="3_lclok"]
+[ext_resource type="Script" path="res://scripts/networking/Server.cs" id="1_hcukc"]
 
 [node name="Server" type="Node"]
-script = ExtResource("1_t6d7r")
-
-[node name="MatchManager" type="Node" parent="." node_paths=PackedStringArray("_finishTimer")]
-script = ExtResource("2_q7ehu")
-_worldDir = "res://scenes/worlds"
-_finishTimer = NodePath("../FinishTimer")
-
-[node name="LobbyManager" type="Node" parent="."]
-script = ExtResource("3_bqfle")
-
-[node name="PlayerManager" type="Node" parent="."]
-script = ExtResource("3_lclok")
-_playerScene = "res://scenes/player/Player.tscn"
+script = ExtResource("1_hcukc")
 
 [node name="FinishTimer" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true
 
-[connection signal="WorldLoaded" from="MatchManager" to="PlayerManager" method="_OnWorldLoaded"]
-[connection signal="GameStarted" from="LobbyManager" to="MatchManager" method="_OnGameStarted"]
-[connection signal="timeout" from="FinishTimer" to="MatchManager" method="_OnFinishTimeout"]
+[node name="States" type="Node" parent="."]
+
+[node name="InLobby" type="Node" parent="States"]
+
+[node name="LoadingWorld" type="Node" parent="States"]
+
+[node name="StartingGame" type="Node" parent="States"]
+
+[node name="InGame" type="Node" parent="States"]
