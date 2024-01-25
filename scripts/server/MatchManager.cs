@@ -25,6 +25,8 @@ public partial class MatchManager : Node {
 			this.GetNodeConst("WORLD").Free();
 		}
 
+		worldName = worldName.Replace(".remap", "");
+
 		var world = Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
 		GetNode("/root").AddChild(world);
 
