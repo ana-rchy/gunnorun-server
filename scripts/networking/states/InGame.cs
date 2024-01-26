@@ -6,6 +6,9 @@ using static Godot.MultiplayerPeer;
 using MsgPack.Serialization;
 
 public partial class InGame : State {
+	[Export(PropertyHint.Dir)] string _worldDir;
+	[Export] Timer _finishTimer;
+
 	double _tickTimer;
 
 	public override void _Ready() {
@@ -32,6 +35,18 @@ public partial class InGame : State {
     }
 
 	//---------------------------------------------------------------------------------//
+    #region | funcs
+
+	string GetRandomWorld() {
+		Random rand = new();
+		string[] worlds = DirAccess.GetFilesAt(_worldDir);
+
+		return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
+	}
+
+	#endregion
+
+	//---------------------------------------------------------------------------------//
     #region | rpc
 
 	[Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
@@ -39,8 +54,11 @@ public partial class InGame : State {
     [Rpc] void Client_Intangibility(float time) {}
     [Rpc] void Client_PlayerHPChanged(long id, int newHP) {}
 	[Rpc] void Client_PlayerFrameChanged(long id, int frame) {}
-    [Rpc] void Client_LapChanged(int lap, int maxLaps) {}
     [Rpc] void Client_PlayerOnGround(long id, bool onGround, float xVel) {}
+	[Rpc] void Client_LapChanged(int lap, int maxLaps) {}
+
+	[Rpc] void Client_PlayerWon(long id, double time) {}
+	[Rpc] void Client_LoadWorld(string worldPath) {}
 
 	[Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
 		if (!IsActiveState()) return;
@@ -89,6 +107,19 @@ public partial class InGame : State {
         
         RpcId(playerID, nameof(Client_LapChanged), lapCount, maxLaps);
     }
+
+
+	public void _OnPlayerWon(long id, float time) {
+		_finishTimer.Start();
+		Rpc(nameof(Client_PlayerWon), id, time);
+	}
+
+	void _OnFinishTimeout() {
+		var world = Global.CurrentWorld == "Random" ? GetRandomWorld() : Global.CurrentWorld;
+
+		Rpc(nameof(Client_LoadWorld), world);
+		StateMachine.ChangeState("LoadingWorld", new() {{ "world", world }} );
+	}
 
 	#endregion
 }

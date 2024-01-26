@@ -8,7 +8,7 @@ public partial class Lap : Node {
 
     public override void _Ready() {
         LapPassed += this.GetNodeConst<InGame>("IN_GAME_STATE")._OnLapPassed;
-        // PlayerWon += this.GetNodeConst<MatchManager>("MATCH_MANAGER")._OnPlayerWon;
+        PlayerWon += this.GetNodeConst<InGame>("IN_GAME_STATE")._OnPlayerWon;
         PlayerWon += this.GetNodeConst<LevelTimer>("LEVEL_TIMER")._OnPlayerWon;
 
         PlayersLapCounts = new Dictionary<long, byte>();
