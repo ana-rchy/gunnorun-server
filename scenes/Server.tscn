@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://lrgun00rx4i2"]
+[gd_scene load_steps=6 format=3 uid="uid://lrgun00rx4i2"]
 
 [ext_resource type="Script" path="res://scripts/networking/Server.cs" id="1_hcukc"]
+[ext_resource type="Script" path="res://scripts/networking/StateMachine.cs" id="2_udajs"]
+[ext_resource type="Script" path="res://scripts/networking/states/InLobby.cs" id="3_qsuja"]
+[ext_resource type="Script" path="res://scripts/networking/states/LoadingWorld.cs" id="4_d7amm"]
+[ext_resource type="Script" path="res://scripts/networking/states/InGame.cs" id="5_d5waj"]
 
 [node name="Server" type="Node"]
 script = ExtResource("1_hcukc")
@@ -9,12 +13,18 @@ script = ExtResource("1_hcukc")
 wait_time = 3.0
 one_shot = true
 
-[node name="States" type="Node" parent="."]
+[node name="States" type="Node" parent="." node_paths=PackedStringArray("_inLobby")]
+script = ExtResource("2_udajs")
+_inLobby = NodePath("InLobby")
 
 [node name="InLobby" type="Node" parent="States"]
+script = ExtResource("3_qsuja")
+_worldDir = "res://scenes/worlds"
 
 [node name="LoadingWorld" type="Node" parent="States"]
-
-[node name="StartingGame" type="Node" parent="States"]
+script = ExtResource("4_d7amm")
+_worldDir = "res://scenes/worlds"
+_playerScene = "res://scenes/player/Player.tscn"
 
 [node name="InGame" type="Node" parent="States"]
+script = ExtResource("5_d5waj")

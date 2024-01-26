@@ -4,17 +4,12 @@ using Godot;
 using static Godot.MultiplayerApi;
 
 public partial class InLobby : State {
-    [Export(PropertyHint.Dir)] static string _worldDir;
+    [Export(PropertyHint.Dir)] string _worldDir;
 
     //---------------------------------------------------------------------------------//
     #region | funcs
 
-    static void UpdatePlayerStatus(long playerID, bool ready) {
-        var player = Global.PlayersData[playerID];
-        player.ReadyStatus = ready;
-        Global.PlayersData[playerID] = player;
-    }
-
+    // pure
     static bool CheckReadiness() {
         bool allReady = true;
         foreach (var player in Global.PlayersData.Values) {
@@ -26,12 +21,19 @@ public partial class InLobby : State {
         return allReady;
     }
 
-    static string GetRandomWorld() {
+    static string GetRandomWorld(string worldDir) {
 		Random rand = new();
-		string[] worlds = DirAccess.GetFilesAt(_worldDir);
+		string[] worlds = DirAccess.GetFilesAt(worldDir);
 
 		return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
 	}
+
+    // unpure
+    void UpdatePlayerStatus(long playerID, bool ready) {
+        var player = Global.PlayersData[playerID];
+        player.ReadyStatus = ready;
+        Global.PlayersData[playerID] = player;
+    }    
 
 	void LoadWorld(string worldName) {
 		if (this.GetNodeConst("WORLD") != null) {
@@ -43,13 +45,15 @@ public partial class InLobby : State {
 		var world = GD.Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
 		GetNode("/root").AddChild(world);
 	}
-    
+
     void StartGame() {
         EmitSignal(SignalName.GameStarted);
         Global.GameState = "Ingame";
 
-        var world = Global.CurrentWorld == "Random" ? MatchManager.GetRandomWorld() : Global.CurrentWorld;
+        var world = Global.CurrentWorld == "Random" ? GetRandomWorld(_worldDir) : Global.CurrentWorld;
         Rpc(nameof(Client_StartGame), world);
+
+        StateMachine.ChangeState("LoadingWorld", new() {{ "world", world }} );
     }
 
     #endregion

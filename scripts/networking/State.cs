@@ -6,7 +6,7 @@ public partial class State : Node {
 	public static StateMachine StateMachine { protected get; set; }
 
 	public virtual void Enter(Dictionary<string, object> message = null) {}
-	public virtual void Update() {}
+	public virtual void Update(double delta) {}
 
 	protected bool IsActiveState() {
 		return StateMachine.CurrentState == this;

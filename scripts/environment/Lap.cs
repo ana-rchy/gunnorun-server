@@ -7,8 +7,8 @@ public partial class Lap : Node {
     public static Dictionary<long, byte> PlayersLapCounts { get; private set; } = new Dictionary<long, byte>();
 
     public override void _Ready() {
-        LapPassed += this.GetNodeConst<PlayerManager>("PLAYER_MANAGER")._OnLapPassed;
-        PlayerWon += this.GetNodeConst<MatchManager>("MATCH_MANAGER")._OnPlayerWon;
+        // LapPassed += this.GetNodeConst<PlayerManager>("PLAYER_MANAGER")._OnLapPassed;
+        // PlayerWon += this.GetNodeConst<MatchManager>("MATCH_MANAGER")._OnPlayerWon;
         PlayerWon += this.GetNodeConst<LevelTimer>("LEVEL_TIMER")._OnPlayerWon;
 
         PlayersLapCounts = new Dictionary<long, byte>();

@@ -1,2 +1,2 @@
 - can send the player won signal again, causing the finish timer to restart (leaving it in cause its funny)
-- cli server no work :(
+- cant ready up to start game after leaving and reconnecting

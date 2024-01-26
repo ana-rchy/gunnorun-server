@@ -5,9 +5,7 @@ using Godot;
 public static class Paths {
     static Dictionary<string, string> NodePaths = new() {
         { "SERVER", "/root/Server" },
-        { "WORLD", "/root/World" },
-        { "LOBBY_MANAGER", "/root/Server/LobbyManager"},
-        { "PLAYER_MANAGER", "/root/Server/PlayerManager" }
+        { "WORLD", "/root/World" }
     };
 
     public static void AddNodePath(string name, string path) {

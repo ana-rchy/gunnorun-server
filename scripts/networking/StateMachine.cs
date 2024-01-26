@@ -12,18 +12,20 @@ public partial class StateMachine : Node {
 		CurrentState = _inLobby;
 	}
 
-	public override void _Process(double _) {
-		CurrentState.Update();
+	public override void _Process(double delta) {
+		CurrentState.Update(delta);
 	}
 
 	public void ChangeState(string state, Dictionary<string, object> message = null) {
 		var stateNode = GetNodeOrNull<State>(state);
 		if (stateNode == null) {
-			Console.WriteLine($"server state {state} doesnt exist");
+			GD.Print($"SERVER: state {state} doesnt exist");
 			return;
 		}
 
 		CurrentState = stateNode;
 		CurrentState.Enter(message);
+
+		GD.Print($"SERVER: changing state to {state}");
 	}
 }
