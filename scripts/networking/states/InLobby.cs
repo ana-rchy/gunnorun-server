@@ -10,9 +10,9 @@ public partial class InLobby : State {
     #region | funcs
 
     // pure
-    static bool CheckReadiness() {
+    static bool CheckReadiness(IEnumerable<Global.PlayerDataStruct> playerData) {
         bool allReady = true;
-        foreach (var player in Global.PlayersData.Values) {
+        foreach (var player in playerData) {
             if (!player.ReadyStatus) {
                 allReady = false;
             }
@@ -21,6 +21,7 @@ public partial class InLobby : State {
         return allReady;
     }
 
+    // state-unpure
     static string GetRandomWorld(string worldDir) {
 		Random rand = new();
 		string[] worlds = DirAccess.GetFilesAt(worldDir);
@@ -28,7 +29,7 @@ public partial class InLobby : State {
 		return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
 	}
 
-    // unpure
+    // side-effects
     void UpdatePlayerStatus(long playerID, bool ready) {
         var player = Global.PlayersData[playerID];
         player.ReadyStatus = ready;
@@ -69,7 +70,7 @@ public partial class InLobby : State {
 
         UpdatePlayerStatus(Multiplayer.GetRemoteSenderId(), ready);
 
-        if (!CheckReadiness()) {
+        if (!CheckReadiness(Global.PlayersData.Values)) {
             Rpc(nameof(Client_UpdateStatus), Multiplayer.GetRemoteSenderId(), ready);
         } else {
             StartGame();

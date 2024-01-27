@@ -6,10 +6,9 @@ public partial class Checkpoints : Node {
     public static Dictionary<long, List<Node>> PlayersUnpassedCheckpoints { get; private set; } = new Dictionary<long, List<Node>>();
 
     public override void _Ready() {
-        var allCheckpoints = new List<Node>(FindChildren("*", "Area2D"));
+        var allCheckpoints = GetAllCheckpoints();
         foreach (var playerID in Global.PlayersData.Keys) {
             PlayersUnpassedCheckpoints.TryAdd(playerID, allCheckpoints);
-            RefreshCheckpoints(playerID);
         }
 
         foreach (Area2D checkpoint in allCheckpoints) {
@@ -21,8 +20,9 @@ public partial class Checkpoints : Node {
     //---------------------------------------------------------------------------------//
     #region | funcs
 
-    void RefreshCheckpoints(long playerID) {
-        PlayersUnpassedCheckpoints[playerID] = new List<Node>(FindChildren("*", "Area2D"));
+    // state-unpure (dependent on world)
+    List<Node> GetAllCheckpoints() {
+        return new List<Node>(FindChildren("*", "Area2D"));
     }
 
     #endregion
@@ -31,7 +31,7 @@ public partial class Checkpoints : Node {
     #region | signals
 
     void _OnLapPassed(long playerID, int lapCount, int maxLaps) {
-        RefreshCheckpoints(playerID);
+        PlayersUnpassedCheckpoints[playerID] = GetAllCheckpoints();
     }
 
     #endregion

@@ -21,6 +21,7 @@ public partial class LoadingWorld : State {
 	//---------------------------------------------------------------------------------//
     #region | funcs
 
+	// side-effects
 	void AddServerPlayers() {
 		foreach (var id in Global.PlayersData.Keys) {
 			CreateNewServerPlayer(id);

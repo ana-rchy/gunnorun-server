@@ -18,7 +18,15 @@ public partial class InGame : State {
     public override void Update(double delta) {
         _tickTimer = (_tickTimer + delta) % Global.TICK_RATE;
 
-		Dictionary<long, Vector2> playerPositions = new Dictionary<long, Vector2>();
+		SendPlayerPositions(GetPlayerPositions());
+    }
+
+	//---------------------------------------------------------------------------------//
+    #region | funcs
+
+	// state-unpure
+	Dictionary<long, Vector2> GetPlayerPositions() {
+		Dictionary<long, Vector2> playerPositions = new();
 
 		foreach (var kvp in Global.PlayersData) {
 			var id = kvp.Key;
@@ -27,21 +35,22 @@ public partial class InGame : State {
 				playerPositions.TryAdd(id, player.GlobalPosition);
 			}
 		}
-		
-		// update puppets
-		var serializer = MessagePackSerializer.Get<Dictionary<long, Vector2>>();
-		byte[] playerPositionsSerialized = serializer.PackSingleObject(playerPositions);
-		Rpc(nameof(Client_UpdatePuppetPositions), playerPositionsSerialized);
-    }
 
-	//---------------------------------------------------------------------------------//
-    #region | funcs
+		return playerPositions;
+	}
 
 	string GetRandomWorld() {
 		Random rand = new();
 		string[] worlds = DirAccess.GetFilesAt(_worldDir);
 
 		return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
+	}
+
+	// side-effects
+	void SendPlayerPositions(Dictionary<long, Vector2> playerPositions) {
+		var serializer = MessagePackSerializer.Get<Dictionary<long, Vector2>>();
+		byte[] playerPositionsSerialized = serializer.PackSingleObject(playerPositions);
+		Rpc(nameof(Client_UpdatePuppetPositions), playerPositionsSerialized);
 	}
 
 	#endregion

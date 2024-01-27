@@ -27,6 +27,7 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
 	#region | funcs
 
+	// pure
 	void GetServerArguments(out string world, out int port, out int peers) {
 		// default values
 		world = Global.CurrentWorld;
@@ -63,6 +64,7 @@ public partial class Server : Node {
 		Print($"{port}\t{peers}");
 	}
 
+	// side-effects
 	void UpnpOpenPort(Object portObj) {
 		int port = (int) portObj;
 
