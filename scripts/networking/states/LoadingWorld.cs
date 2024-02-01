@@ -7,6 +7,11 @@ public partial class LoadingWorld : State {
     [Export(PropertyHint.File)] string _playerScene;
 
     public override void Enter(Dictionary<string, object> message) {
+        var oldWorld = this.GetNodeConst("WORLD");
+        if (oldWorld != null) {
+            oldWorld.Free();
+        }
+
         var world = GD.Load<PackedScene>($"{_worldDir}/{message["world"]}.tscn").Instantiate();
         GetNode("/root").AddChild(world);
     }
