@@ -23,11 +23,11 @@ public partial class InLobby : State {
 
     // state-unpure
     static string GetRandomWorld(string worldDir) {
-		Random rand = new();
-		string[] worlds = DirAccess.GetFilesAt(worldDir);
+	Random rand = new();
+        string[] worlds = DirAccess.GetFilesAt(worldDir);
 
-		return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
-	}
+        return worlds[rand.Next(worlds.Length)].Replace(".tscn", "");
+    }
 
     // side-effects
     void UpdatePlayerStatus(long playerID, bool ready) {
@@ -36,16 +36,16 @@ public partial class InLobby : State {
         Global.PlayersData[playerID] = player;
     }    
 
-	void LoadWorld(string worldName) {
-		if (this.GetNodeConst("WORLD") != null) {
-			this.GetNodeConst("WORLD").Free();
-		}
+    void LoadWorld(string worldName) {
+        if (this.GetNodeConst("WORLD") != null) {
+            this.GetNodeConst("WORLD").Free();
+        }
 
-		worldName = worldName.Replace(".remap", "");
+        worldName = worldName.Replace(".remap", "");
 
-		var world = GD.Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
-		GetNode("/root").AddChild(world);
-	}
+        var world = GD.Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
+        GetNode("/root").AddChild(world);
+    }
 
     void StartGame() {
         EmitSignal(SignalName.GameStarted);
