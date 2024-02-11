@@ -60,10 +60,9 @@ public partial class InGame : State {
 
     [Rpc(TransferMode = TransferModeEnum.UnreliableOrdered)] void Client_UpdatePuppetPositions(byte[] puppetPositionsSerialized) {}
     [Rpc] void Client_WeaponShot(long id, string name, float rotation, float range) {}
-    [Rpc] void Client_Intangibility(float time) {}
+    [Rpc] void Client_Intangibility(long id, float time) {}
     [Rpc] void Client_PlayerHPChanged(long id, int newHP) {}
     [Rpc] void Client_PlayerFrameChanged(long id, int frame) {}
-    [Rpc] void Client_PlayerOnGround(long id, bool onGround, float xVel) {}
     [Rpc] void Client_LapChanged(int lap, int maxLaps) {}
 
     [Rpc] void Client_PlayerWon(long id, double time) {}
@@ -85,7 +84,7 @@ public partial class InGame : State {
     [Rpc(RpcMode.AnyPeer)] void Server_Intangibility(long id, float time) {
         if (!IsActiveState()) return;
 
-        RpcId(id, nameof(Client_Intangibility), time);
+        Rpc(nameof(Client_Intangibility), id, time);
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerHPChanged(long id, int newHP) {
@@ -98,12 +97,6 @@ public partial class InGame : State {
         if (!IsActiveState()) return;
 
         Rpc(nameof(Client_PlayerFrameChanged), Multiplayer.GetRemoteSenderId(), frame);
-    }
-
-    [Rpc(RpcMode.AnyPeer)] void Server_PlayerOnGround(bool onGround, float xVel) {
-        if (!IsActiveState()) return;
-
-        Rpc(nameof(Client_PlayerOnGround), Multiplayer.GetRemoteSenderId(), onGround, xVel);
     }
 
     #endregion
