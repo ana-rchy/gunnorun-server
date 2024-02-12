@@ -90,12 +90,6 @@ public partial class Server : Node {
 	#endregion
 
 	//---------------------------------------------------------------------------------//
-	#region | rpc
-
-
-	#endregion
-
-	//---------------------------------------------------------------------------------//
 	#region | signals
 
 	void _OnPeerConnected(long id) {
@@ -103,25 +97,6 @@ public partial class Server : Node {
 	}
 
 	void _OnPeerDisconnected(long id) {
-		// Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
-
-		// Global.PlayersData.Remove(id);
-
-		// if (Global.GameState == "Ingame") {
-		// 	GetNode($"{Paths.GetNodePath("WORLD")}/{id}").QueueFree();
-		// }
-
-		// if (Multiplayer.GetPeers().Length == 0) {
-		// 	Global.GameState = "Lobby";
-		// 	var world = this.GetNodeConst("WORLD");
-		// 	if (world != null) {
-		// 		world.QueueFree();
-		// 	}
-
-		// 	Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
-		// }
-
-		// Print($"player {id} disconnected");
 		Global.PlayersData.Remove(id);
 
 		Print($"player {id} disconnected");
