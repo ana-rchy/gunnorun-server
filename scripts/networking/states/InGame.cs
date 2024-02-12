@@ -9,15 +9,17 @@ public partial class InGame : State {
     [Export(PropertyHint.Dir)] string _worldDir;
     [Export] Timer _finishTimer;
 
-    double _tickTimer;
-
     public override void _Ready() {
         Paths.AddNodePath("IN_GAME_STATE", GetPath());
+
+        Multiplayer.PeerDisconnected += _OnPeerDisconnected;
+    }
+
+    public override void Enter(Dictionary<string, object> message = null) {
+        Multiplayer.MultiplayerPeer.RefuseNewConnections = true;
     }
 
     public override void Update(double delta) {
-        _tickTimer = (_tickTimer + delta) % Global.TICK_RATE;
-
         SendPlayerPositions(GetPlayerPositions());
     }
 
@@ -114,6 +116,22 @@ public partial class InGame : State {
     public void _OnPlayerWon(long id, float time) {
         _finishTimer.Start();
         Rpc(nameof(Client_PlayerWon), id, time);
+    }
+
+    void _OnPeerDisconnected(long id) {
+        if (!IsActiveState()) return;
+
+        GetNode($"{Paths.GetNodePath("WORLD")}/{id}").QueueFree();
+
+        if (Multiplayer.GetPeers().Length == 0) {
+		 	var world = this.GetNodeConst("WORLD");
+		 	if (world != null) {
+		 		world.QueueFree();
+		 	}
+
+		 	Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
+            StateMachine.ChangeState("InLobby");
+        }
     }
 
     void _OnFinishTimeout() {

@@ -26,9 +26,7 @@ script = ExtResource("4_d7amm")
 _worldDir = "res://scenes/worlds"
 _playerScene = "res://scenes/player/Player.tscn"
 
-[node name="InGame" type="Node" parent="States" node_paths=PackedStringArray("_finishTimer")]
+[node name="InGame" type="Node" parent="States"]
 script = ExtResource("5_d5waj")
-_worldDir = "res://scenes/worlds"
-_finishTimer = NodePath("../../FinishTimer")
 
 [connection signal="timeout" from="FinishTimer" to="States/InGame" method="_OnFinishTimeout"]

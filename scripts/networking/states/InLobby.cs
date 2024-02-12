@@ -2,9 +2,15 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using static Godot.MultiplayerApi;
+using MsgPack.Serialization;
 
 public partial class InLobby : State {
     [Export(PropertyHint.Dir)] string _worldDir;
+
+    public override void _Ready() {
+        Multiplayer.PeerConnected += _OnPlayerConnected;
+        Multiplayer.PeerDisconnected += _OnPlayerDisconnected;
+    }
 
     //---------------------------------------------------------------------------------//
     #region | funcs
@@ -83,6 +89,19 @@ public partial class InLobby : State {
     #region | signals
 
     [Signal] public delegate void GameStartedEventHandler();
+
+    void _OnPlayerConnected(long id) {
+        if (!IsActiveState()) return;
+
+        var serializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
+        var serializedPlayerData = serializer.PackSingleObject(Global.PlayersData);
+
+        RpcId(id, nameof(Client_Setup), serializedPlayerData);
+    }
+
+    void _OnPlayerDisconnected(long id) {
+        if (!IsActiveState()) return;
+    }
 
     #endregion
 }

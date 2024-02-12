@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Godot;
 using static Godot.GD;
 using static Godot.MultiplayerApi;
-using MsgPack.Serialization;
 
 public partial class Server : Node {
 	public override void _Ready() {
@@ -75,8 +74,6 @@ public partial class Server : Node {
 			if (error == 0 && error2 == 0) {
 				Print("UPNP success");
 			} else {
-				upnp.DeletePortMapping(port, "UDP");
-				upnp.DeletePortMapping(port, "TCP");
 				Print("UPNP failed: Failed to add a port mapping (Is the port already forwarded? Port already in use?)");
 			}
 		} else {
@@ -110,32 +107,30 @@ public partial class Server : Node {
 	#region | signals
 
 	void _OnPeerConnected(long id) {
-		var serializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
-		var serializedPlayerData = serializer.PackSingleObject(Global.PlayersData);
-
-		RpcId(id, nameof(Client_Setup), serializedPlayerData);
-
 		Print($"player {id} connected");
 	}
 
 	void _OnPeerDisconnected(long id) {
-		Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
+		// Rpc(nameof(Client_PlayerLeft), id, Global.GameState);
 
+		// Global.PlayersData.Remove(id);
+
+		// if (Global.GameState == "Ingame") {
+		// 	GetNode($"{Paths.GetNodePath("WORLD")}/{id}").QueueFree();
+		// }
+
+		// if (Multiplayer.GetPeers().Length == 0) {
+		// 	Global.GameState = "Lobby";
+		// 	var world = this.GetNodeConst("WORLD");
+		// 	if (world != null) {
+		// 		world.QueueFree();
+		// 	}
+
+		// 	Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
+		// }
+
+		// Print($"player {id} disconnected");
 		Global.PlayersData.Remove(id);
-
-		if (Global.GameState == "Ingame") {
-			GetNode($"{Paths.GetNodePath("WORLD")}/{id}").QueueFree();
-		}
-
-		if (Multiplayer.GetPeers().Length == 0) {
-			Global.GameState = "Lobby";
-			var world = this.GetNodeConst("WORLD");
-			if (world != null) {
-				world.QueueFree();
-			}
-
-			Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
-		}
 
 		Print($"player {id} disconnected");
 	}
