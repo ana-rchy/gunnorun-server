@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Godot;
 
 public partial class Checkpoints : Node {
-    public static Dictionary<long, List<Node>> PlayersUnpassedCheckpoints { get; private set; } = new Dictionary<long, List<Node>>();
+    public static Dictionary<long, List<Node>> PlayersUnpassedCheckpoints { get; private set; }
 
     public override void _Ready() {
+        PlayersUnpassedCheckpoints = new(); // needed to reset the dictionary every map
+
         var allCheckpoints = GetAllCheckpoints();
         foreach (var playerID in Global.PlayersData.Keys) {
             PlayersUnpassedCheckpoints.TryAdd(playerID, allCheckpoints);

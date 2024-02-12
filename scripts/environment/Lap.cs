@@ -4,17 +4,17 @@ using Godot;
 
 public partial class Lap : Node {
     [Export] int _maxLaps;
-    public static Dictionary<long, byte> PlayersLapCounts { get; private set; } = new Dictionary<long, byte>();
+    Dictionary<long, byte> _playersLapCounts = new Dictionary<long, byte>();
 
     public override void _Ready() {
         LapPassed += this.GetNodeConst<InGame>("IN_GAME_STATE")._OnLapPassed;
         PlayerWon += this.GetNodeConst<InGame>("IN_GAME_STATE")._OnPlayerWon;
         PlayerWon += this.GetNodeConst<LevelTimer>("LEVEL_TIMER")._OnPlayerWon;
 
-        PlayersLapCounts = new Dictionary<long, byte>();
+        _playersLapCounts = new Dictionary<long, byte>();
 
         foreach (var playerID in Global.PlayersData.Keys) {
-            PlayersLapCounts.Add(playerID, 1);
+            _playersLapCounts.Add(playerID, 1);
         }
     }
 
@@ -28,13 +28,13 @@ public partial class Lap : Node {
         var playerID = long.Parse(player.Name);
 
         if (Checkpoints.PlayersUnpassedCheckpoints[playerID].Count == 0) {
-            if (PlayersLapCounts[playerID] < _maxLaps) {
-                PlayersLapCounts[playerID]++;
+            if (_playersLapCounts[playerID] < _maxLaps) {
+                _playersLapCounts[playerID]++;
             } else {
                 EmitSignal(SignalName.PlayerWon, playerID, LevelTimer.Time);
             }
 
-            EmitSignal(SignalName.LapPassed, playerID, PlayersLapCounts[playerID], _maxLaps);
+            EmitSignal(SignalName.LapPassed, playerID, _playersLapCounts[playerID], _maxLaps);
         }
     }
 

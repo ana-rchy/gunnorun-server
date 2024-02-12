@@ -71,33 +71,23 @@ public partial class InGame : State {
     [Rpc] void Client_LoadWorld(string worldPath) {}
 
     [Rpc(RpcMode.AnyPeer, TransferMode = TransferModeEnum.UnreliableOrdered)] void Server_UpdatePlayerPosition(Vector2 position) {
-        if (!IsActiveState()) return;
-
         var player = GetNode<ServerPlayer>($"{Paths.GetNodePath("WORLD")}/{Multiplayer.GetRemoteSenderId()}");
         player.PuppetPosition = position;
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_WeaponShot(string name, float rotation, float range) {
-        if (!IsActiveState()) return;
-
         Rpc(nameof(Client_WeaponShot), Multiplayer.GetRemoteSenderId(), name, rotation, range);
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_Intangibility(long id, float time) {
-        if (!IsActiveState()) return;
-
         Rpc(nameof(Client_Intangibility), id, time);
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerHPChanged(long id, int newHP) {
-        if (!IsActiveState()) return;
-
         Rpc(nameof(Client_PlayerHPChanged), id, newHP);
     }
 
     [Rpc(RpcMode.AnyPeer)] void Server_PlayerFrameChanged(int frame) {
-        if (!IsActiveState()) return;
-
         Rpc(nameof(Client_PlayerFrameChanged), Multiplayer.GetRemoteSenderId(), frame);
     }
 
@@ -107,8 +97,6 @@ public partial class InGame : State {
     #region | signals
 
     public void _OnLapPassed(long playerID, int lapCount, int maxLaps) {
-        if (!IsActiveState()) return;
-
         RpcId(playerID, nameof(Client_LapChanged), lapCount, maxLaps);
     }
 
@@ -124,12 +112,12 @@ public partial class InGame : State {
         GetNode($"{Paths.GetNodePath("WORLD")}/{id}").QueueFree();
 
         if (Multiplayer.GetPeers().Length == 0) {
-		 	var world = this.GetNodeConst("WORLD");
-		 	if (world != null) {
-		 		world.QueueFree();
-		 	}
+            var world = this.GetNodeConst("WORLD");
+            if (world != null) {
+                world.QueueFree();
+            }
 
-		 	Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
+            Multiplayer.MultiplayerPeer.RefuseNewConnections = false;
             StateMachine.ChangeState("InLobby");
         }
     }

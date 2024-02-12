@@ -8,8 +8,7 @@ public partial class InLobby : State {
     [Export(PropertyHint.Dir)] string _worldDir;
 
     public override void _Ready() {
-        Multiplayer.PeerConnected += _OnPlayerConnected;
-        Multiplayer.PeerDisconnected += _OnPlayerDisconnected;
+        Multiplayer.PeerConnected += _OnPeerConnected;
     }
 
     //---------------------------------------------------------------------------------//
@@ -42,20 +41,8 @@ public partial class InLobby : State {
         Global.PlayersData[playerID] = player;
     }    
 
-    void LoadWorld(string worldName) {
-        if (this.GetNodeConst("WORLD") != null) {
-            this.GetNodeConst("WORLD").Free();
-        }
-
-        worldName = worldName.Replace(".remap", "");
-
-        var world = GD.Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
-        GetNode("/root").AddChild(world);
-    }
-
     void StartGame() {
         EmitSignal(SignalName.GameStarted);
-        Global.GameState = "Ingame";
 
         var world = Global.CurrentWorld == "Random" ? GetRandomWorld(_worldDir) : Global.CurrentWorld;
         Rpc(nameof(Client_StartGame), world);
@@ -68,12 +55,17 @@ public partial class InLobby : State {
     //---------------------------------------------------------------------------------//
     #region | rpc
 
+    [Rpc] void Client_Setup(byte[] serializedPlayerData) {}
+    [Rpc] void Client_NewPlayer(long id, string username, Color color) {}
     [Rpc] void Client_UpdateStatus(long id, bool ready) {}
     [Rpc] void Client_StartGame(string worldName) {}
 
-    [Rpc(RpcMode.AnyPeer)] void Server_UpdateStatus(bool ready) {
-        if (!IsActiveState()) return;
+    [Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
+        Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
+        Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color);
+    }
 
+    [Rpc(RpcMode.AnyPeer)] void Server_UpdateStatus(bool ready) {
         UpdatePlayerStatus(Multiplayer.GetRemoteSenderId(), ready);
 
         if (!CheckReadiness(Global.PlayersData.Values)) {
@@ -90,17 +82,13 @@ public partial class InLobby : State {
 
     [Signal] public delegate void GameStartedEventHandler();
 
-    void _OnPlayerConnected(long id) {
+    void _OnPeerConnected(long id) {
         if (!IsActiveState()) return;
 
         var serializer = MessagePackSerializer.Get<Dictionary<long, Global.PlayerDataStruct>>();
         var serializedPlayerData = serializer.PackSingleObject(Global.PlayersData);
 
         RpcId(id, nameof(Client_Setup), serializedPlayerData);
-    }
-
-    void _OnPlayerDisconnected(long id) {
-        if (!IsActiveState()) return;
     }
 
     #endregion

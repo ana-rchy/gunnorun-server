@@ -22,7 +22,7 @@ public partial class LobbyManager : Node {
     
     void StartGame() {
         EmitSignal(SignalName.GameStarted);
-        Global.GameState = "Ingame";
+        // Global.GameState = "Ingame";
     }
 
     #endregion

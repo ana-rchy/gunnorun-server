@@ -92,14 +92,6 @@ public partial class Server : Node {
 	//---------------------------------------------------------------------------------//
 	#region | rpc
 
-	[Rpc] void Client_Setup(byte[] serializedPlayerData) {}
-	[Rpc] void Client_NewPlayer(long id, string username, Color color) {}
-	[Rpc] void Client_PlayerLeft(long id, string gameState) {}
-
-	[Rpc(RpcMode.AnyPeer)] void Server_NewPlayerData(string username, Color color) {
-		Global.PlayersData.TryAdd(Multiplayer.GetRemoteSenderId(), new Global.PlayerDataStruct(username, color));
-		Rpc(nameof(Client_NewPlayer), Multiplayer.GetRemoteSenderId(), username, color);
-	}
 
 	#endregion
 

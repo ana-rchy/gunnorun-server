@@ -12,7 +12,9 @@ public partial class LoadingWorld : State {
             oldWorld.Free();
         }
 
-        var world = GD.Load<PackedScene>($"{_worldDir}/{message["world"]}.tscn").Instantiate();
+        var worldName = ((string) message["world"]).Replace(".remap", "");
+
+        var world = GD.Load<PackedScene>($"{_worldDir}/{worldName}.tscn").Instantiate();
         GetNode("/root").AddChild(world);
     }
 
